@@ -294,13 +294,24 @@ p {
   display: grid;
   grid-template-columns: minmax(220px, 380px) 1fr;
   gap: 36px;
-  align-items: start;
+  align-items: center;
   border-bottom: 1px solid var(--line);
+}
+
+.intro-band .section__heading {
+  display: block;
+  margin-bottom: 0;
+}
+
+.intro-band .section__heading h2 {
+  margin-top: 10px;
+  white-space: nowrap;
 }
 
 .intro-copy {
   display: grid;
   gap: 14px;
+  max-width: 760px;
   font-size: 19px;
 }
 
