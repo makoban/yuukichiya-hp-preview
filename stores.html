@@ -77,18 +77,30 @@
         <h2>営業日・採寸予約</h2>
       </div>
       <div class="calendar-layout">
-        <article class="calendar-card">
-          <div class="calendar-card__head">
-            <h3>営業日カレンダー</h3>
-            <p>本店・髙橋店の営業日をGoogleカレンダーで確認できるよう準備しています。</p>
-          </div>
-          <div class="calendar-embed" aria-label="Googleカレンダー準備中">
-            <iframe
-              title="勇吉屋 営業日カレンダー"
-              srcdoc="<style>body{margin:0;display:grid;place-items:center;min-height:100vh;background:#f7f6f1;color:#172033;font-family:sans-serif;text-align:center;padding:24px;box-sizing:border-box}strong{display:block;font-size:20px;margin-bottom:8px}span{color:#596372;line-height:1.6}</style><strong>Googleカレンダー接続予定</strong><span>公開用の埋め込みコードを設定すると、ここに営業日カレンダーが表示されます。</span>"
-              loading="lazy"></iframe>
-          </div>
-        </article>
+        <div class="calendar-stack" aria-label="営業日カレンダー">
+          <article class="store-calendar">
+            <div class="store-calendar__head">
+              <h3>本店</h3>
+              <p>今月から3か月分を自動表示します。</p>
+            </div>
+            <div class="month-calendar-list">
+              <iframe class="google-calendar-frame" title="勇吉屋 本店 営業日カレンダー" data-calendar-title="勇吉屋 本店 営業日カレンダー" data-calendar-id="77341630b85cb54d7674740dd824782d84acf1290fa743c7ed0689f47fea413e@group.calendar.google.com" data-month-offset="0" loading="lazy"></iframe>
+              <iframe class="google-calendar-frame" title="勇吉屋 本店 営業日カレンダー 翌月" data-calendar-title="勇吉屋 本店 営業日カレンダー" data-calendar-id="77341630b85cb54d7674740dd824782d84acf1290fa743c7ed0689f47fea413e@group.calendar.google.com" data-month-offset="1" loading="lazy"></iframe>
+              <iframe class="google-calendar-frame" title="勇吉屋 本店 営業日カレンダー 翌々月" data-calendar-title="勇吉屋 本店 営業日カレンダー" data-calendar-id="77341630b85cb54d7674740dd824782d84acf1290fa743c7ed0689f47fea413e@group.calendar.google.com" data-month-offset="2" loading="lazy"></iframe>
+            </div>
+          </article>
+          <article class="store-calendar">
+            <div class="store-calendar__head">
+              <h3>髙橋店</h3>
+              <p>今月から3か月分を自動表示します。</p>
+            </div>
+            <div class="month-calendar-list">
+              <iframe class="google-calendar-frame" title="勇吉屋 髙橋店 営業日カレンダー" data-calendar-title="勇吉屋 髙橋店 営業日カレンダー" data-calendar-id="02e7cae3780410d324c3243920d35e65a7554bba73a1af0a401304bde30fbe49@group.calendar.google.com" data-month-offset="0" loading="lazy"></iframe>
+              <iframe class="google-calendar-frame" title="勇吉屋 髙橋店 営業日カレンダー 翌月" data-calendar-title="勇吉屋 髙橋店 営業日カレンダー" data-calendar-id="02e7cae3780410d324c3243920d35e65a7554bba73a1af0a401304bde30fbe49@group.calendar.google.com" data-month-offset="1" loading="lazy"></iframe>
+              <iframe class="google-calendar-frame" title="勇吉屋 髙橋店 営業日カレンダー 翌々月" data-calendar-title="勇吉屋 髙橋店 営業日カレンダー" data-calendar-id="02e7cae3780410d324c3243920d35e65a7554bba73a1af0a401304bde30fbe49@group.calendar.google.com" data-month-offset="2" loading="lazy"></iframe>
+            </div>
+          </article>
+        </div>
         <aside class="reservation-panel">
           <h3>採寸予約</h3>
           <p>中学校新入学の採寸予約は、各店舗のAirリザーブからお申し込みください。</p>

@@ -474,12 +474,17 @@ dd {
 
 .calendar-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(280px, .75fr);
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
   gap: 24px;
-  align-items: stretch;
+  align-items: start;
 }
 
-.calendar-card,
+.calendar-stack {
+  display: grid;
+  gap: 18px;
+}
+
+.store-calendar,
 .reservation-panel {
   min-width: 0;
   padding: 24px;
@@ -489,40 +494,42 @@ dd {
   box-shadow: 0 12px 32px rgba(23, 32, 51, .08);
 }
 
-.calendar-card__head {
-  margin-bottom: 18px;
+.store-calendar__head {
+  margin-bottom: 14px;
 }
 
-.calendar-card__head h3,
+.store-calendar__head h3,
 .reservation-panel h3 {
   margin-bottom: 8px;
   color: var(--navy);
   font-size: 22px;
 }
 
-.calendar-card__head p,
+.store-calendar__head p,
 .reservation-panel p {
   color: var(--muted);
 }
 
-.calendar-embed {
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--paper);
-  aspect-ratio: 16 / 10;
+.month-calendar-list {
+  display: grid;
+  gap: 12px;
 }
 
-.calendar-embed iframe {
+.google-calendar-frame {
   width: 100%;
-  height: 100%;
+  height: 330px;
   border: 0;
+  border-radius: 8px;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--line);
 }
 
 .reservation-panel {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  position: sticky;
+  top: 92px;
 }
 
 .reservation-links {
@@ -787,7 +794,11 @@ dd {
   .store-grid,
   .calendar-layout,
   .gallery-row {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
+  }
+
+  .reservation-panel {
+    position: static;
   }
 }
 
@@ -889,13 +900,13 @@ dd {
     grid-template-columns: 1fr;
   }
 
-  .calendar-card,
+  .store-calendar,
   .reservation-panel {
     padding: 20px;
   }
 
-  .calendar-embed {
-    aspect-ratio: 4 / 5;
+  .google-calendar-frame {
+    height: 300px;
   }
 
   .split-feature picture img,
