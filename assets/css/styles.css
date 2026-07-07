@@ -468,6 +468,78 @@ dd {
   line-height: 1.7;
 }
 
+.calendar-section {
+  background: var(--mist);
+}
+
+.calendar-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(280px, .75fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+.calendar-card,
+.reservation-panel {
+  min-width: 0;
+  padding: 24px;
+  border: 1px solid rgba(23, 52, 92, .12);
+  border-radius: 8px;
+  background: var(--white);
+  box-shadow: 0 12px 32px rgba(23, 32, 51, .08);
+}
+
+.calendar-card__head {
+  margin-bottom: 18px;
+}
+
+.calendar-card__head h3,
+.reservation-panel h3 {
+  margin-bottom: 8px;
+  color: var(--navy);
+  font-size: 22px;
+}
+
+.calendar-card__head p,
+.reservation-panel p {
+  color: var(--muted);
+}
+
+.calendar-embed {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  aspect-ratio: 16 / 10;
+}
+
+.calendar-embed iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.reservation-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.reservation-links {
+  display: grid;
+  gap: 12px;
+  margin: 22px 0;
+}
+
+.reservation-links .button {
+  justify-content: center;
+  width: 100%;
+}
+
+.reservation-note {
+  font-size: 13px;
+}
+
 .product-list {
   display: grid;
   gap: 54px;
@@ -713,6 +785,7 @@ dd {
   .service-grid,
   .school-groups,
   .store-grid,
+  .calendar-layout,
   .gallery-row {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -811,8 +884,18 @@ dd {
   .service-grid,
   .school-groups,
   .store-grid,
+  .calendar-layout,
   .gallery-row {
     grid-template-columns: 1fr;
+  }
+
+  .calendar-card,
+  .reservation-panel {
+    padding: 20px;
+  }
+
+  .calendar-embed {
+    aspect-ratio: 4 / 5;
   }
 
   .split-feature picture img,
