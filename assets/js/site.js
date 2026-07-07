@@ -8,40 +8,90 @@ if (toggle && nav) {
   });
 }
 
-const calendarFrames = document.querySelectorAll(".google-calendar-frame[data-calendar-id]");
-
-const formatCalendarDate = (date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}${month}${day}`;
+const sourceHolidayCalendars = {
+  // Current Jimdo source calendar copied from https://www.yuukichi-ya.com/.
+  main: {
+    label: "本店",
+    months: [
+      { year: 2026, month: 6, closed: [2, 9, 16, 23, 30] },
+      { year: 2026, month: 7, closed: [7, 14, 21, 28] },
+      { year: 2026, month: 8, closed: [4, 7, 8, 9, 10, 11, 12, 13, 14, 15, 18, 25] },
+    ],
+  },
+  takahashi: {
+    label: "髙橋店",
+    months: [
+      { year: 2026, month: 6, closed: [1, 8, 15, 22, 29] },
+      { year: 2026, month: 7, closed: [6, 13, 20, 27] },
+      { year: 2026, month: 8, closed: [3, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 24, 31] },
+    ],
+  },
 };
 
-calendarFrames.forEach((frame) => {
-  const calendarId = frame.dataset.calendarId;
-  const offset = Number.parseInt(frame.dataset.monthOffset || "0", 10);
-  const today = new Date();
-  const monthStart = new Date(today.getFullYear(), today.getMonth() + offset, 1);
-  const monthEnd = new Date(today.getFullYear(), today.getMonth() + offset + 1, 1);
-  const monthLabel = `${monthStart.getFullYear()}年${monthStart.getMonth() + 1}月`;
+const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
 
-  const params = new URLSearchParams({
-    showTitle: "0",
-    showNav: "0",
-    showDate: "1",
-    showPrint: "0",
-    showTabs: "0",
-    showCalendars: "0",
-    showTz: "0",
-    mode: "MONTH",
-    wkst: "1",
-    bgcolor: "#ffffff",
-    src: calendarId,
-    color: "#2f7d62",
-    ctz: "Asia/Tokyo",
-    dates: `${formatCalendarDate(monthStart)}/${formatCalendarDate(monthEnd)}`,
+const renderMonthCalendar = ({ year, month, closed }) => {
+  const closedDays = new Set(closed);
+  const firstDay = new Date(year, month - 1, 1).getDay();
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const cells = [];
+
+  for (let index = 0; index < firstDay; index += 1) {
+    cells.push({ day: "", closed: false });
+  }
+
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    cells.push({ day, closed: closedDays.has(day) });
+  }
+
+  while (cells.length % 7 !== 0) {
+    cells.push({ day: "", closed: false });
+  }
+
+  const calendar = document.createElement("article");
+  calendar.className = "shop-month-calendar";
+
+  const title = document.createElement("h4");
+  title.textContent = `${year}年${month}月`;
+  calendar.append(title);
+
+  const grid = document.createElement("div");
+  grid.className = "shop-month-calendar__grid";
+  grid.setAttribute("role", "grid");
+  grid.setAttribute("aria-label", `${year}年${month}月の営業日カレンダー`);
+
+  weekdays.forEach((weekday) => {
+    const item = document.createElement("div");
+    item.className = "shop-month-calendar__weekday";
+    item.textContent = weekday;
+    grid.append(item);
   });
 
-  frame.title = `${frame.dataset.calendarTitle || "営業日カレンダー"} ${monthLabel}`;
-  frame.src = `https://calendar.google.com/calendar/embed?${params.toString()}`;
+  cells.forEach((cell) => {
+    const item = document.createElement("div");
+    item.className = cell.closed
+      ? "shop-month-calendar__day is-closed"
+      : "shop-month-calendar__day";
+    item.textContent = cell.day;
+    if (cell.closed) {
+      item.setAttribute("aria-label", `${month}月${cell.day}日 休業日`);
+    }
+    if (!cell.day) {
+      item.setAttribute("aria-hidden", "true");
+    }
+    grid.append(item);
+  });
+
+  calendar.append(grid);
+  return calendar;
+};
+
+document.querySelectorAll(".shop-calendar-list[data-store-calendar]").forEach((target) => {
+  const calendar = sourceHolidayCalendars[target.dataset.storeCalendar];
+  if (!calendar) return;
+
+  target.replaceChildren();
+  calendar.months.forEach((month) => {
+    target.append(renderMonthCalendar(month));
+  });
 });
