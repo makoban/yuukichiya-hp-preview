@@ -426,6 +426,49 @@ p {
   line-height: 1.45;
 }
 
+.home-news-calendar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+  gap: 28px;
+  align-items: start;
+}
+
+.home-news-column,
+.home-calendar-column {
+  min-width: 0;
+}
+
+.home-calendar-column {
+  display: grid;
+  gap: 18px;
+}
+
+.home-calendar-column .section__heading {
+  display: block;
+  margin-bottom: 0;
+}
+
+.home-calendar-column .section__heading h2 {
+  margin-top: 8px;
+  font-size: 30px;
+}
+
+.home-news-column .notice-list {
+  gap: 22px;
+}
+
+.home-news-column .notice {
+  grid-template-columns: 1fr;
+}
+
+.home-news-column .notice__media {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.home-news-column .notice__media img:only-child {
+  grid-column: 1 / -1;
+}
+
 .store-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -474,7 +517,7 @@ dd {
 
 .calendar-layout {
   display: grid;
-  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  grid-template-columns: 1fr;
   gap: 24px;
   align-items: start;
 }
@@ -484,8 +527,12 @@ dd {
   gap: 18px;
 }
 
-.store-calendar,
-.reservation-panel {
+.calendar-section .calendar-stack {
+  grid-template-columns: repeat(2, minmax(280px, 360px));
+  align-items: start;
+}
+
+.store-calendar {
   min-width: 0;
   padding: 24px;
   border: 1px solid rgba(23, 52, 92, .12);
@@ -498,15 +545,34 @@ dd {
   margin-bottom: 14px;
 }
 
-.store-calendar__head h3,
-.reservation-panel h3 {
+.store-calendar__reservation {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--mist);
+}
+
+.store-calendar__reservation .button {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 14px;
+}
+
+.store-calendar__reservation p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.store-calendar__head h3 {
   margin-bottom: 8px;
   color: var(--navy);
   font-size: 22px;
 }
 
-.store-calendar__head p,
-.reservation-panel p {
+.store-calendar__head p {
   color: var(--muted);
 }
 
@@ -524,26 +590,9 @@ dd {
   box-shadow: inset 0 0 0 1px var(--line);
 }
 
-.reservation-panel {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  position: sticky;
-  top: 92px;
-}
-
-.reservation-links {
-  display: grid;
-  gap: 12px;
-  margin: 22px 0;
-}
-
-.reservation-links .button {
-  justify-content: center;
-  width: 100%;
-}
-
-.reservation-note {
+.calendar-note {
+  margin-top: 14px;
+  color: var(--muted);
   font-size: 13px;
 }
 
@@ -841,6 +890,7 @@ dd {
   .product-item,
   .school-card,
   .split-feature,
+  .home-news-calendar,
   .intro-band,
   .contact-layout,
   .site-footer {
@@ -856,13 +906,11 @@ dd {
   .school-groups,
   .store-grid,
   .calendar-layout,
+  .calendar-section .calendar-stack,
   .gallery-row {
     grid-template-columns: 1fr;
   }
 
-  .reservation-panel {
-    position: static;
-  }
 }
 
 @media (max-width: 640px) {
@@ -959,12 +1007,12 @@ dd {
   .school-groups,
   .store-grid,
   .calendar-layout,
+  .calendar-section .calendar-stack,
   .gallery-row {
     grid-template-columns: 1fr;
   }
 
-  .store-calendar,
-  .reservation-panel {
+  .store-calendar {
     padding: 20px;
   }
 
