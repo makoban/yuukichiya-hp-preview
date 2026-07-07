@@ -356,6 +356,10 @@ p {
   align-items: start;
 }
 
+.notice__media--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .notice__media img {
   width: 100%;
   max-height: 560px;
@@ -363,6 +367,12 @@ p {
   border: 1px solid var(--line);
   border-radius: 6px;
   background: var(--paper);
+}
+
+.notice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 18px;
 }
 
 .text-link {
@@ -390,12 +400,39 @@ p {
   box-shadow: var(--shadow);
 }
 
+.split-feature .feature-image--contain img {
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  background: var(--white);
+  border: 1px solid var(--line);
+}
+
 .quick-links {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 18px;
   padding-top: 48px;
   padding-bottom: 58px;
+}
+
+.support-banner-strip {
+  padding-top: 38px;
+}
+
+.support-banner-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.support-banner-grid img {
+  width: 100%;
+  aspect-ratio: 930 / 328;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  box-shadow: var(--shadow);
 }
 
 .quick-links a,
@@ -549,6 +586,10 @@ p {
 
 .home-news-column .notice__media {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.home-news-column .notice__media--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .home-news-column .notice__media img:only-child {
@@ -1152,8 +1193,11 @@ dd {
   }
 
   .notice__media,
+  .notice__media--three,
+  .home-news-column .notice__media--three,
   .school-card__media,
   .quick-links,
+  .support-banner-grid,
   .service-grid,
   .school-groups,
   .store-grid,
