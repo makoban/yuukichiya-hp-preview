@@ -505,14 +505,82 @@ p {
   gap: 16px;
 }
 
-.support-banner-grid img {
+.support-banner,
+.support-banner-image {
+  position: relative;
   width: 100%;
   aspect-ratio: 930 / 328;
-  object-fit: cover;
+  overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--white);
   box-shadow: var(--shadow);
+}
+
+.support-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.support-banner-image {
+  display: block;
+  object-fit: contain;
+}
+
+.support-banner img {
+  position: absolute;
+  inset: 0;
+}
+
+.support-banner::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(90deg, rgba(255, 255, 255, .94) 0%, rgba(255, 255, 255, .78) 33%, rgba(255, 255, 255, .12) 63%, rgba(255, 255, 255, 0) 100%);
+}
+
+.support-banner--life::after {
+  background: linear-gradient(90deg, rgba(255, 255, 255, .92) 0%, rgba(236, 248, 255, .76) 35%, rgba(255, 255, 255, .14) 64%, rgba(255, 255, 255, 0) 100%);
+}
+
+.support-banner__copy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: min(62%, 430px);
+  height: 100%;
+  padding: 26px 34px;
+  color: var(--ink);
+}
+
+.support-banner__label {
+  margin: 0 0 8px;
+  color: var(--green);
+  font-size: .76rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.support-banner h3 {
+  margin: 0;
+  color: var(--navy);
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  line-height: 1.22;
+  text-wrap: balance;
+}
+
+.support-banner__copy > p:last-child {
+  margin: 12px 0 0;
+  max-width: 24em;
+  font-size: .96rem;
+  font-weight: 700;
+  line-height: 1.75;
+  text-wrap: pretty;
 }
 
 .quick-links a,
@@ -1572,6 +1640,36 @@ button.shop-month-calendar__day:focus-visible {
   .calendar-section .calendar-stack,
   .gallery-row {
     grid-template-columns: 1fr;
+  }
+
+  .support-banner {
+    min-height: 210px;
+  }
+
+  .support-banner::after,
+  .support-banner--life::after {
+    background: linear-gradient(90deg, rgba(255, 255, 255, .96) 0%, rgba(255, 255, 255, .84) 48%, rgba(255, 255, 255, .2) 78%, rgba(255, 255, 255, 0) 100%);
+  }
+
+  .support-banner__copy {
+    width: min(68%, 260px);
+    padding: 18px 20px;
+  }
+
+  .support-banner__label {
+    margin-bottom: 6px;
+    font-size: .68rem;
+  }
+
+  .support-banner h3 {
+    font-size: 25px;
+    line-height: 1.25;
+  }
+
+  .support-banner__copy > p:last-child {
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 1.65;
   }
 
   .quick-links a {
