@@ -472,7 +472,7 @@ p {
 
 .quick-links a::after {
   position: absolute;
-  right: -28px;
+  right: 12px;
   bottom: -34px;
   width: 132px;
   height: 132px;
