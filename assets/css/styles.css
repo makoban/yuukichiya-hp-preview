@@ -1141,6 +1141,24 @@ button.shop-month-calendar__day:focus-visible {
   padding: 26px;
 }
 
+.service-card {
+  display: grid;
+  align-content: start;
+  overflow: hidden;
+  padding: 0;
+  box-shadow: 0 14px 34px rgba(23, 32, 51, .08);
+}
+
+.service-card__image img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.service-card__body {
+  padding: 26px;
+}
+
 .tag-list {
   display: flex;
   flex-wrap: wrap;
@@ -1530,6 +1548,14 @@ button.shop-month-calendar__day:focus-visible {
   .info-card,
   .contact-form,
   .feature-note {
+    padding: 20px;
+  }
+
+  .service-card {
+    padding: 0;
+  }
+
+  .service-card__body {
     padding: 20px;
   }
 
