@@ -47,6 +47,7 @@ const storeCalendarSettings = {
 };
 
 const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+const weekdayNames = ["日", "月", "火", "水", "木", "金", "土"];
 
 const padNumber = (value) => String(value).padStart(2, "0");
 
@@ -99,9 +100,73 @@ const getCalendarTimeRange = (months) => {
   };
 };
 
-const getFallbackClosureKeys = (store, months) => {
+const stripHtml = (value = "") => {
+  const wrapper = document.createElement("div");
+  wrapper.innerHTML = value
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>/gi, "\n")
+    .replace(/<p[^>]*>/gi, "");
+  return wrapper.textContent.replace(/\s+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+};
+
+const getDateLabel = (dateKey) => {
+  const date = dateKeyToDate(dateKey);
+  return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日（${weekdayNames[date.getDay()]}）`;
+};
+
+const getTimeLabel = (event) => {
+  if (event.allDay) return "終日";
+  if (!event.startText) return "";
+
+  return event.endText ? `${event.startText} - ${event.endText}` : event.startText;
+};
+
+const getTimeTextFromValue = (value) => {
+  if (!value || !value.includes("T")) return "";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  return date.toLocaleTimeString("ja-JP", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Asia/Tokyo",
+  });
+};
+
+const buildCalendarEvent = ({
+  id,
+  title,
+  description = "",
+  location = "",
+  startValue,
+  endValue,
+  allDay = false,
+  source = "google",
+}) => {
+  const fallbackStartKey = startValue ? startValue.slice(0, 10) : "";
+  const dateKeys = getEventDateKeys({
+    start: allDay ? { date: startValue } : { dateTime: startValue },
+    end: allDay ? { date: endValue } : { dateTime: endValue },
+  });
+
+  return {
+    id: id || `${source}-${title}-${fallbackStartKey}`,
+    title,
+    description: stripHtml(description),
+    location: stripHtml(location),
+    dateKeys,
+    allDay,
+    source,
+    isClosure: closureTitlePattern.test(title),
+    startText: getTimeTextFromValue(startValue),
+    endText: getTimeTextFromValue(endValue),
+  };
+};
+
+const getFallbackEvents = (store, months) => {
   const visibleMonthKeys = new Set(months.map(formatMonthKey));
-  const closureKeys = new Set();
+  const events = [];
 
   months.forEach(({ year, month }) => {
     const daysInMonth = new Date(year, month, 0).getDate();
@@ -109,18 +174,35 @@ const getFallbackClosureKeys = (store, months) => {
     for (let day = 1; day <= daysInMonth; day += 1) {
       const date = new Date(year, month - 1, day);
       if (date.getDay() === store.closedWeekday) {
-        closureKeys.add(formatDateKey(date));
+        const dateKey = formatDateKey(date);
+        events.push(buildCalendarEvent({
+          id: `${store.label}-weekly-${dateKey}`,
+          title: "休業日",
+          description: `${store.label}の定休日です。`,
+          startValue: dateKey,
+          endValue: formatDateKey(addDays(date, 1)),
+          allDay: true,
+          source: "fallback",
+        }));
       }
     }
   });
 
   store.specialClosures.forEach((dateKey) => {
     if (visibleMonthKeys.has(dateKey.slice(0, 7))) {
-      closureKeys.add(dateKey);
+      events.push(buildCalendarEvent({
+        id: `${store.label}-special-${dateKey}`,
+        title: "夏季休業",
+        description: "夏季休業日です。",
+        startValue: dateKey,
+        endValue: formatDateKey(addDays(dateKeyToDate(dateKey), 1)),
+        allDay: true,
+        source: "fallback",
+      }));
     }
   });
 
-  return closureKeys;
+  return events;
 };
 
 const getEventDateKeys = (event) => {
@@ -150,8 +232,26 @@ const getEventDateKeys = (event) => {
   return dateKeys;
 };
 
-const fetchGoogleClosureKeys = async (store, months) => {
-  if (!googleCalendarAccess || !store.calendarId) return new Set();
+const normalizeGoogleEvent = (event) => {
+  const allDay = Boolean(event.start?.date);
+  const startValue = event.start?.date || event.start?.dateTime;
+  const endValue = event.end?.date || event.end?.dateTime;
+  if (!startValue) return null;
+
+  return buildCalendarEvent({
+    id: event.id,
+    title: event.summary || "予定",
+    description: event.description || "",
+    location: event.location || "",
+    startValue,
+    endValue,
+    allDay,
+    source: "google",
+  });
+};
+
+const fetchGoogleEvents = async (store, months) => {
+  if (!googleCalendarAccess || !store.calendarId) return [];
 
   const { timeMin, timeMax } = getCalendarTimeRange(months);
   const endpoint = new URL(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(store.calendarId)}/events`);
@@ -168,21 +268,141 @@ const fetchGoogleClosureKeys = async (store, months) => {
   }
 
   const payload = await response.json();
-  const closureKeys = new Set();
-
-  (payload.items || []).forEach((event) => {
-    const title = event.summary || "";
-    if (event.status === "cancelled" || !closureTitlePattern.test(title)) return;
-
-    getEventDateKeys(event).forEach((dateKey) => {
-      closureKeys.add(dateKey);
-    });
-  });
-
-  return closureKeys;
+  return (payload.items || [])
+    .filter((event) => event.status !== "cancelled")
+    .map(normalizeGoogleEvent)
+    .filter(Boolean);
 };
 
-const renderMonthCalendar = ({ year, month, closureKeys }) => {
+const getPreviewEvents = (store, months) => {
+  const previewEvents = window.yuukichiyaCalendarPreviewEvents || {};
+  const entries = previewEvents[store.label] || previewEvents[store.calendarId] || [];
+  const monthKeys = new Set(months.map(formatMonthKey));
+
+  return entries
+    .map(normalizeGoogleEvent)
+    .filter(Boolean)
+    .filter((event) => event.dateKeys.some((dateKey) => monthKeys.has(dateKey.slice(0, 7))));
+};
+
+const getDedupedEvents = (events) => {
+  const seen = new Set();
+  return events.filter((event) => {
+    const eventKey = `${event.title}-${event.dateKeys.join(",")}-${getTimeLabel(event)}`;
+    if (seen.has(eventKey)) return false;
+
+    seen.add(eventKey);
+    return true;
+  });
+};
+
+const groupEventsByDate = (events) => {
+  return events.reduce((groups, event) => {
+    event.dateKeys.forEach((dateKey) => {
+      if (!groups.has(dateKey)) groups.set(dateKey, []);
+      groups.get(dateKey).push(event);
+    });
+
+    return groups;
+  }, new Map());
+};
+
+const sortCalendarEvents = (events) => {
+  return events.sort((first, second) => {
+    if (first.isClosure !== second.isClosure) return first.isClosure ? -1 : 1;
+    if (first.allDay !== second.allDay) return first.allDay ? -1 : 1;
+    return getTimeLabel(first).localeCompare(getTimeLabel(second), "ja");
+  });
+};
+
+const getDayEvents = (eventsByDate, dateKey) => {
+  return sortCalendarEvents([...(eventsByDate.get(dateKey) || [])]);
+};
+
+const openCalendarDetails = ({ dateKey, events, storeLabel }) => {
+  const dialog = document.querySelector(".calendar-detail-dialog");
+  if (!dialog) return;
+
+  dialog.querySelector(".calendar-detail-dialog__store").textContent = storeLabel;
+  dialog.querySelector(".calendar-detail-dialog__date").textContent = getDateLabel(dateKey);
+
+  const list = dialog.querySelector(".calendar-detail-dialog__list");
+  list.replaceChildren();
+
+  events.forEach((event) => {
+    const item = document.createElement("li");
+    item.className = event.isClosure
+      ? "calendar-detail-event is-closure"
+      : "calendar-detail-event";
+
+    const title = document.createElement("h4");
+    title.textContent = event.title;
+    item.append(title);
+
+    const timeLabel = getTimeLabel(event);
+    if (timeLabel) {
+      const time = document.createElement("p");
+      time.className = "calendar-detail-event__meta";
+      time.textContent = timeLabel;
+      item.append(time);
+    }
+
+    if (event.location) {
+      const location = document.createElement("p");
+      location.className = "calendar-detail-event__meta";
+      location.textContent = event.location;
+      item.append(location);
+    }
+
+    if (event.description) {
+      const description = document.createElement("p");
+      description.className = "calendar-detail-event__description";
+      description.textContent = event.description;
+      item.append(description);
+    }
+
+    list.append(item);
+  });
+
+  dialog.hidden = false;
+  dialog.querySelector(".calendar-detail-dialog__close").focus();
+};
+
+const closeCalendarDetails = () => {
+  const dialog = document.querySelector(".calendar-detail-dialog");
+  if (dialog) dialog.hidden = true;
+};
+
+const ensureCalendarDetailDialog = () => {
+  if (document.querySelector(".calendar-detail-dialog")) return;
+
+  const dialog = document.createElement("div");
+  dialog.className = "calendar-detail-dialog";
+  dialog.hidden = true;
+  dialog.innerHTML = `
+    <div class="calendar-detail-dialog__backdrop" data-calendar-detail-close></div>
+    <section class="calendar-detail-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="calendar-detail-title">
+      <button class="calendar-detail-dialog__close" type="button" data-calendar-detail-close aria-label="予定詳細を閉じる">×</button>
+      <p class="calendar-detail-dialog__store"></p>
+      <h3 id="calendar-detail-title" class="calendar-detail-dialog__date"></h3>
+      <ul class="calendar-detail-dialog__list"></ul>
+    </section>
+  `;
+
+  dialog.addEventListener("click", (event) => {
+    if (event.target.closest("[data-calendar-detail-close]")) {
+      closeCalendarDetails();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeCalendarDetails();
+  });
+
+  document.body.append(dialog);
+};
+
+const renderMonthCalendar = ({ year, month, eventsByDate, storeLabel }) => {
   const firstDay = new Date(year, month - 1, 1).getDay();
   const daysInMonth = new Date(year, month, 0).getDate();
   const cells = [];
@@ -193,7 +413,13 @@ const renderMonthCalendar = ({ year, month, closureKeys }) => {
 
   for (let day = 1; day <= daysInMonth; day += 1) {
     const dateKey = formatDateKey(new Date(year, month - 1, day));
-    cells.push({ day, closed: closureKeys.has(dateKey) });
+    const events = getDayEvents(eventsByDate, dateKey);
+    cells.push({
+      day,
+      dateKey,
+      events,
+      closed: events.some((event) => event.isClosure),
+    });
   }
 
   while (cells.length % 7 !== 0) {
@@ -220,13 +446,53 @@ const renderMonthCalendar = ({ year, month, closureKeys }) => {
   });
 
   cells.forEach((cell) => {
-    const item = document.createElement("div");
-    item.className = cell.closed
-      ? "shop-month-calendar__day is-closed"
-      : "shop-month-calendar__day";
-    item.textContent = cell.day;
+    const item = cell.events?.length ? document.createElement("button") : document.createElement("div");
+    const classNames = ["shop-month-calendar__day"];
     if (cell.closed) {
-      item.setAttribute("aria-label", `${month}月${cell.day}日 休業日`);
+      classNames.push("is-closed");
+    } else if (cell.events?.length) {
+      classNames.push("has-events");
+    }
+    item.className = classNames.join(" ");
+    item.textContent = "";
+
+    if (cell.day) {
+      const number = document.createElement("span");
+      number.className = "shop-month-calendar__day-number";
+      number.textContent = cell.day;
+      item.append(number);
+    }
+
+    if (cell.events?.length) {
+      const labels = document.createElement("span");
+      labels.className = "shop-month-calendar__events";
+
+      cell.events.slice(0, 2).forEach((event) => {
+        const label = document.createElement("span");
+        label.className = event.isClosure
+          ? "shop-month-calendar__event is-closure"
+          : "shop-month-calendar__event";
+        label.textContent = event.title;
+        labels.append(label);
+      });
+
+      if (cell.events.length > 2) {
+        const more = document.createElement("span");
+        more.className = "shop-month-calendar__event-more";
+        more.textContent = `+${cell.events.length - 2}`;
+        labels.append(more);
+      }
+
+      item.append(labels);
+      item.type = "button";
+      item.setAttribute("aria-label", `${month}月${cell.day}日 ${cell.events.length}件の予定`);
+      item.addEventListener("click", () => {
+        openCalendarDetails({
+          dateKey: cell.dateKey,
+          events: cell.events,
+          storeLabel,
+        });
+      });
     }
     if (!cell.day) {
       item.setAttribute("aria-hidden", "true");
@@ -238,10 +504,11 @@ const renderMonthCalendar = ({ year, month, closureKeys }) => {
   return calendar;
 };
 
-const renderStoreCalendar = (target, months, closureKeys) => {
+const renderStoreCalendar = (target, months, events, storeLabel) => {
+  const eventsByDate = groupEventsByDate(events);
   target.replaceChildren();
   months.forEach((month) => {
-    target.append(renderMonthCalendar({ ...month, closureKeys }));
+    target.append(renderMonthCalendar({ ...month, eventsByDate, storeLabel }));
   });
 };
 
@@ -249,18 +516,22 @@ document.querySelectorAll(".shop-calendar-list[data-store-calendar]").forEach((t
   const store = storeCalendarSettings[target.dataset.storeCalendar];
   if (!store) return;
 
-  const visibleMonths = getVisibleMonths(getTokyoToday());
-  const fallbackClosureKeys = getFallbackClosureKeys(store, visibleMonths);
-  renderStoreCalendar(target, visibleMonths, fallbackClosureKeys);
+  ensureCalendarDetailDialog();
 
-  fetchGoogleClosureKeys(store, visibleMonths)
-    .then((googleClosureKeys) => {
-      if (!googleClosureKeys.size) return;
+  const visibleMonths = getVisibleMonths(getTokyoToday());
+  const fallbackEvents = getFallbackEvents(store, visibleMonths);
+  const previewEvents = getPreviewEvents(store, visibleMonths);
+  renderStoreCalendar(target, visibleMonths, getDedupedEvents([...fallbackEvents, ...previewEvents]), store.label);
+
+  fetchGoogleEvents(store, visibleMonths)
+    .then((googleEvents) => {
+      if (!googleEvents.length) return;
 
       renderStoreCalendar(
         target,
         visibleMonths,
-        new Set([...fallbackClosureKeys, ...googleClosureKeys]),
+        getDedupedEvents([...fallbackEvents, ...previewEvents, ...googleEvents]),
+        store.label,
       );
     })
     .catch(() => {
