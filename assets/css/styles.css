@@ -1676,6 +1676,46 @@ button.shop-month-calendar__day:focus-visible {
     grid-template-columns: 1fr;
   }
 
+  .welcome-gallery__grid,
+  .notice__media,
+  .notice__media--three,
+  .home-news-column .notice__media--three,
+  .school-card__media,
+  .support-banner-grid {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .welcome-card,
+  .notice__media img,
+  .school-card__media img,
+  .support-banner,
+  .support-banner-image {
+    flex: 0 0 min(82vw, 330px);
+    scroll-snap-align: start;
+  }
+
+  .notice__media img,
+  .school-card__media img {
+    width: min(82vw, 330px);
+    max-height: 380px;
+    object-fit: contain;
+  }
+
+  .school-card__media img {
+    max-height: 420px;
+  }
+
+  .gallery-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
   .support-banner {
     min-height: 210px;
   }
@@ -1719,8 +1759,20 @@ button.shop-month-calendar__day:focus-visible {
     padding: 20px;
   }
 
+  .shop-calendar-list,
   .store-calendar-panel .shop-calendar-list {
-    grid-template-columns: 1fr;
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .shop-month-calendar {
+    flex: 0 0 min(82vw, 330px);
+    scroll-snap-align: start;
   }
 
   .product-item {
@@ -1729,24 +1781,44 @@ button.shop-month-calendar__day:focus-visible {
 
   .product-gallery__main,
   .product-gallery--single .product-gallery__main {
-    min-height: 300px;
+    min-height: 240px;
   }
 
   .product-gallery__main img {
-    max-height: 320px;
+    max-height: 260px;
   }
 
   .product-gallery__thumbs,
   .product-gallery--wide .product-gallery__thumbs {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .product-gallery__thumbs figure {
+    flex: 0 0 78px;
+    scroll-snap-align: start;
   }
 
   .split-feature picture img,
   .store-card img,
   .gallery-row picture img {
     height: auto;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 16 / 10;
     object-fit: cover;
+  }
+
+  .gallery-row picture img {
+    aspect-ratio: 1 / 1;
+  }
+
+  .split-feature .feature-image--contain img {
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
   }
 
   .notice__copy h3,
