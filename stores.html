@@ -37,48 +37,17 @@
   </section>
   <main>
     
-    <section class="section calendar-section" id="calendar">
+    <section class="section store-calendar-section" id="calendar">
       <div class="section__heading">
-        <p class="eyebrow">Calendar</p>
-        <h2>営業日・採寸予約</h2>
+        <p class="eyebrow">Shop & Calendar</p>
+        <h2>店舗別の営業日・アクセス</h2>
       </div>
-      <div class="calendar-layout">
-        <div class="calendar-stack" aria-label="営業日カレンダー">
-          <article class="store-calendar">
-            <div class="store-calendar__head">
-              <h3>本店</h3>
-            </div>
-            <div class="store-calendar__reservation">
-              <a class="button" href="https://airrsv.net/yuukichiya/calendar" target="_blank" rel="noopener noreferrer">本店の採寸予約</a>
-              <p>本店でのみ採寸可能：朝日丘中・梅坪台中・猿投中・浄水中・竜神中</p>
-            </div>
-            <div class="month-calendar-list">
-              <div class="shop-calendar-list" data-store-calendar="main"></div>
-            </div>
-          </article>
-          <article class="store-calendar">
-            <div class="store-calendar__head">
-              <h3>髙橋店</h3>
-            </div>
-            <div class="store-calendar__reservation">
-              <a class="button" href="https://airrsv.net/yuukichiyatakahashi/calendar" target="_blank" rel="noopener noreferrer">髙橋店の採寸予約</a>
-              <p>髙橋店でのみ採寸可能：石野中・藤岡中・益富中</p>
-            </div>
-            <div class="month-calendar-list">
-              <div class="shop-calendar-list" data-store-calendar="takahashi"></div>
-            </div>
-          </article>
-        </div>
-      </div>
-      <p class="calendar-note">上記以外の中学校は、どちらの店舗でも採寸できます。</p>
-    </section>
-    <section class="section">
-
-  <div class="store-grid">
-    <article class="store-card">
+      <div class="store-calendar-grid">
+        <section class="store-calendar-panel" aria-labelledby="stores-main-store-title">
+          <article class="store-card">
           <picture class="store-card__image"><source media="(max-width: 640px)" srcset="assets/generated/store-illustration-main-mobile.jpg"><img src="assets/generated/store-illustration-main.jpg" alt="勇吉屋 本店の店舗イメージ"></picture>
           <div class="store-card__body">
-            <h3>勇吉屋 本店</h3>
+            <h3 id="stores-main-store-title">勇吉屋 本店</h3>
             <dl>
               <dt>住所</dt><dd><a href="https://www.google.com/maps/search/?api=1&amp;query=%E6%84%9B%E7%9F%A5%E7%9C%8C%E8%B1%8A%E7%94%B0%E5%B8%82%E6%A1%9C%E7%94%BA1-29" target="_blank" rel="noopener noreferrer">愛知県豊田市桜町1-29</a></dd>
               <dt>電話番号</dt><dd><a href="tel:0565331155">0565-33-1155</a></dd>
@@ -89,10 +58,25 @@
               <dt>取扱い校</dt><dd>本店近隣</dd>
             </dl>
           </div>
-        </article><article class="store-card">
+          </article>
+          <article class="store-calendar" aria-label="本店の営業日カレンダー">
+            <div class="store-calendar__head">
+              <h3>本店の営業日・採寸予約</h3>
+            </div>
+            <div class="store-calendar__reservation">
+              <a class="button" href="https://airrsv.net/yuukichiya/calendar" target="_blank" rel="noopener noreferrer">本店の採寸予約</a>
+              <p>本店でのみ採寸可能：朝日丘中・梅坪台中・猿投中・浄水中・竜神中</p>
+            </div>
+            <div class="month-calendar-list">
+              <div class="shop-calendar-list" data-store-calendar="main"></div>
+            </div>
+          </article>
+        </section>
+        <section class="store-calendar-panel" aria-labelledby="stores-takahashi-store-title">
+          <article class="store-card">
           <picture class="store-card__image"><source media="(max-width: 640px)" srcset="assets/generated/store-illustration-takahashi-mobile.jpg"><img src="assets/generated/store-illustration-takahashi.jpg" alt="勇吉屋 髙橋店の店舗イメージ"></picture>
           <div class="store-card__body">
-            <h3>勇吉屋 髙橋店</h3>
+            <h3 id="stores-takahashi-store-title">勇吉屋 髙橋店</h3>
             <dl>
               <dt>住所</dt><dd><a href="https://www.google.com/maps/search/?api=1&amp;query=%E6%84%9B%E7%9F%A5%E7%9C%8C%E8%B1%8A%E7%94%B0%E5%B8%82%E9%AB%98%E4%B8%8A1-14-2" target="_blank" rel="noopener noreferrer">愛知県豊田市高上1-14-2</a></dd>
               <dt>電話番号</dt><dd><a href="tel:0565805050">0565-80-5050</a></dd>
@@ -103,8 +87,22 @@
               <dt>取扱い校</dt><dd>高橋店近隣</dd>
             </dl>
           </div>
-        </article>
-  </div>
+          </article>
+          <article class="store-calendar" aria-label="髙橋店の営業日カレンダー">
+            <div class="store-calendar__head">
+              <h3>髙橋店の営業日・採寸予約</h3>
+            </div>
+            <div class="store-calendar__reservation">
+              <a class="button" href="https://airrsv.net/yuukichiyatakahashi/calendar" target="_blank" rel="noopener noreferrer">髙橋店の採寸予約</a>
+              <p>髙橋店でのみ採寸可能：石野中・藤岡中・益富中</p>
+            </div>
+            <div class="month-calendar-list">
+              <div class="shop-calendar-list" data-store-calendar="takahashi"></div>
+            </div>
+          </article>
+        </section>
+      </div>
+      <p class="calendar-note">上記以外の中学校は、どちらの店舗でも採寸できます。</p>
     </section>
     <section class="section gallery-row">
       <picture class="gallery-image"><source media="(max-width: 640px)" srcset="assets/generated/store-illustration-main-mobile.jpg"><img src="assets/generated/store-illustration-main.jpg" alt="本店の店舗イメージ"></picture>

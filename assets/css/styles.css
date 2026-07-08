@@ -1089,6 +1089,39 @@ button.shop-month-calendar__day:focus-visible {
   font-size: 13px;
 }
 
+.store-calendar-section {
+  background: var(--mist);
+}
+
+.store-calendar-grid {
+  display: grid;
+  gap: 30px;
+}
+
+.store-calendar-panel {
+  display: grid;
+  grid-template-columns: minmax(280px, .72fr) minmax(0, 1.28fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.store-calendar-panel .store-card,
+.store-calendar-panel .store-calendar {
+  height: 100%;
+}
+
+.store-calendar-panel .store-card img {
+  height: 220px;
+}
+
+.store-calendar-panel .shop-calendar-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.store-calendar-panel .shop-month-calendar__day {
+  min-height: 48px;
+}
+
 .product-list {
   display: grid;
   gap: 28px;
@@ -1495,6 +1528,7 @@ button.shop-month-calendar__day:focus-visible {
   .service-grid,
   .school-groups,
   .store-grid,
+  .store-calendar-panel,
   .calendar-layout,
   .calendar-section .calendar-stack,
   .gallery-row {
@@ -1683,6 +1717,10 @@ button.shop-month-calendar__day:focus-visible {
 
   .store-calendar {
     padding: 20px;
+  }
+
+  .store-calendar-panel .shop-calendar-list {
+    grid-template-columns: 1fr;
   }
 
   .product-item {
