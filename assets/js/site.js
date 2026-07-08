@@ -285,6 +285,29 @@ const getPreviewEvents = (store, months) => {
     .filter((event) => event.dateKeys.some((dateKey) => monthKeys.has(dateKey.slice(0, 7))));
 };
 
+const getSnapshotEntries = (payload, store) => {
+  const stores = payload?.stores || payload || {};
+  return stores[store.label] || stores[store.calendarId] || [];
+};
+
+const filterEventsToMonths = (events, months) => {
+  const monthKeys = new Set(months.map(formatMonthKey));
+  return events.filter((event) => event.dateKeys.some((dateKey) => monthKeys.has(dateKey.slice(0, 7))));
+};
+
+const fetchSnapshotEvents = async (store, months) => {
+  const response = await fetch("assets/data/calendar-events.json", { cache: "no-store" });
+  if (!response.ok) return [];
+
+  const payload = await response.json();
+  return filterEventsToMonths(
+    getSnapshotEntries(payload, store)
+      .map(normalizeGoogleEvent)
+      .filter(Boolean),
+    months,
+  );
+};
+
 const getDedupedEvents = (events) => {
   const seen = new Set();
   return events.filter((event) => {
@@ -521,18 +544,29 @@ document.querySelectorAll(".shop-calendar-list[data-store-calendar]").forEach((t
   const visibleMonths = getVisibleMonths(getTokyoToday());
   const fallbackEvents = getFallbackEvents(store, visibleMonths);
   const previewEvents = getPreviewEvents(store, visibleMonths);
-  renderStoreCalendar(target, visibleMonths, getDedupedEvents([...fallbackEvents, ...previewEvents]), store.label);
+  const baseEvents = [...fallbackEvents, ...previewEvents];
+  renderStoreCalendar(target, visibleMonths, getDedupedEvents(baseEvents), store.label);
 
-  fetchGoogleEvents(store, visibleMonths)
-    .then((googleEvents) => {
-      if (!googleEvents.length) return;
-
+  fetchSnapshotEvents(store, visibleMonths)
+    .then((snapshotEvents) => {
       renderStoreCalendar(
         target,
         visibleMonths,
-        getDedupedEvents([...fallbackEvents, ...previewEvents, ...googleEvents]),
+        getDedupedEvents([...baseEvents, ...snapshotEvents]),
         store.label,
       );
+
+      return fetchGoogleEvents(store, visibleMonths)
+        .then((googleEvents) => {
+          if (!googleEvents.length) return;
+
+          renderStoreCalendar(
+            target,
+            visibleMonths,
+            getDedupedEvents([...baseEvents, ...snapshotEvents, ...googleEvents]),
+            store.label,
+          );
+        });
     })
     .catch(() => {
       target.dataset.calendarSource = "fallback";
