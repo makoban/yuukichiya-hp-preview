@@ -18,22 +18,113 @@ git checkout main
 
 ## データの流れ
 
+### 楽スタHP連携
+
 1. 楽スタHPまたは中継APIが `assets/data/rakusuta-news.sample.json` と同じ形式で記事を返す
 2. HP側は記事タイトル、本文、画像、リンクを新着情報に表示する
 3. LINE BOT側は同じ記事を画像メッセージまたは Flex Message カードに変換する
 
 本番では `assets/data/rakusuta-news.sample.json` を直接編集するのではなく、楽スタHP側の出力URL、または Cloudflare Worker などの中継APIを参照します。
 
+### HP更新専用LINE BOT
+
+既存の「勇吉屋公式」はお客様向けとして残し、HP更新専用に別チャネルを作ります。
+
+```text
+スタッフLINE
+  ↓
+勇吉屋HP更新管理Bot
+  ↓
+Cloudflare Worker
+  ↓
+D1: 投稿本文・状態・リンク
+R2: 投稿画像
+  ↓
+勇吉屋専用ダッシュボード
+  ↓
+HP新着情報の公開フィード
+```
+
+管理画面:
+
+```text
+yuukichiya-dashboard.html
+```
+
+Worker:
+
+```text
+cloudflare/src/index.js
+cloudflare/schema.sql
+cloudflare/wrangler.jsonc
+```
+
 ## 本番LINE BOTに必要な環境変数
 
 秘密情報はGitへ入れません。
 
 ```text
-LINE_WEBHOOK_SIGNING_VALUE=...
-LINE_REPLY_VALUE=...
-RAKUSUTA_FEED_URL=https://.../rakusuta-news.json
-SITE_BASE_URL=https://makoban.github.io/yuukichiya-hp-preview/
+LINE_CHANNEL_SECRET=...
+LINE_CHANNEL_ACCESS_TOKEN=...
+ADMIN_TOKEN=...
 ```
+
+`ADMIN_TOKEN` はダッシュボードからWorker APIを操作するための管理トークンです。
+
+## Cloudflare設定
+
+Cloudflareへログイン後に実行します。
+
+```bash
+npx wrangler d1 create yuukichiya-hp-news
+npx wrangler r2 bucket create yuukichiya-hp-news-media
+npx wrangler d1 execute yuukichiya-hp-news --file=cloudflare/schema.sql --remote
+npx wrangler secret put LINE_CHANNEL_SECRET --config cloudflare/wrangler.jsonc
+npx wrangler secret put LINE_CHANNEL_ACCESS_TOKEN --config cloudflare/wrangler.jsonc
+npx wrangler secret put ADMIN_TOKEN --config cloudflare/wrangler.jsonc
+npx wrangler deploy --config cloudflare/wrangler.jsonc
+```
+
+`d1 create` の戻り値に `database_id` が出た場合は、`cloudflare/wrangler.jsonc` の `d1_databases` に追記します。
+
+## LINE Developers / LINE Official Account設定
+
+2024年9月以降、Messaging APIチャネルはLINE Developers Consoleから直接新規作成できません。先にLINE公式アカウントを新規作成し、その公式アカウントでMessaging APIを有効化します。
+
+新規公式アカウント名:
+
+```text
+勇吉屋HP更新管理Bot
+```
+
+用途:
+
+```text
+HP更新管理専用。お客様向けの「勇吉屋公式」とは分ける。
+```
+
+流れ:
+
+```text
+LINE Official Account Managerで公式アカウント作成
+  ↓
+Messaging APIを有効化
+  ↓
+Providerは勇吉屋/既存管理Providerを選択
+  ↓
+LINE Developers Consoleで作成されたMessaging APIチャネルを確認
+```
+
+Messaging API設定:
+
+```text
+Webhook URL: https://<worker-url>/webhook
+Use webhook: ON
+Auto-reply messages: OFF
+Greeting messages: 任意
+```
+
+チャネルシークレットを `LINE_CHANNEL_SECRET`、Messaging APIのチャネルアクセストークンを `LINE_CHANNEL_ACCESS_TOKEN` に登録します。
 
 ## 表示確認
 
@@ -41,6 +132,7 @@ SITE_BASE_URL=https://makoban.github.io/yuukichiya-hp-preview/
 
 ```text
 rakusuta-line-preview.html
+yuukichiya-dashboard.html
 ```
 
 このページでは、HP新着情報に入る形と、LINE上で画像がどう表示されるかを同時に確認できます。

@@ -1,0 +1,30 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "yuukichiya-hp-news-bot",
+  "main": "src/index.js",
+  "compatibility_date": "2026-07-08",
+  "compatibility_flags": ["nodejs_compat"],
+  "keep_vars": true,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "vars": {
+    "PUBLIC_SITE_BASE_URL": "https://makoban.github.io/yuukichiya-hp-preview/",
+    "DASHBOARD_URL": "https://makoban.github.io/yuukichiya-hp-preview/yuukichiya-dashboard.html",
+    "CORS_ORIGIN": "*"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "yuukichiya-hp-news",
+      "database_id": "b66cb430-202d-4375-9ba5-b1fe43c6294d"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "yuukichiya-hp-news-media"
+    }
+  ]
+}
