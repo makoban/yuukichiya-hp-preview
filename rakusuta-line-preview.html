@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>楽スタHP・LINE BOT連携プレビュー | 勇吉屋</title>
+  <meta name="description" content="勇吉屋HPの楽スタHP連携とLINE BOT画像表示を確認するための内部プレビューです。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@600;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="assets/original/logo.png">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body data-page="rakusuta-line-preview.html" data-rakusuta-feed="assets/data/rakusuta-news.sample.json">
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="勇吉屋 ホーム">
+      <img src="assets/original/logo.png" alt="豊田市内の勇吉屋へ">
+      <span>学生衣料専門店</span>
+    </a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span><b>メニュー</b></button>
+    <nav class="site-nav" id="site-nav" aria-label="主要ナビゲーション">
+      <a href="index.html">ホーム</a><a href="products.html">商品一覧</a><a href="services.html">サービス</a><a href="schools.html">取扱校</a><a href="stores.html">店舗・アクセス</a><a href="contact.html">お問い合わせ</a>
+    </nav>
+  </header>
+  <style>
+    .page-bg-line-preview { background-image: linear-gradient(90deg, rgba(15, 33, 58, .9), rgba(15, 33, 58, .46)), url('assets/generated/hero-uniform-hall.jpg'); }
+    @media (max-width: 640px) {
+      .page-bg-line-preview { background-image: linear-gradient(90deg, rgba(15, 33, 58, .9), rgba(15, 33, 58, .52)), url('assets/generated/hero-uniform-hall-mobile.jpg'); }
+    }
+  </style>
+  <section class="page-hero page-bg-line-preview">
+    <div>
+      <p class="eyebrow">Internal Preview</p>
+      <h1><span class="title-line">楽スタHP連携と</span><span class="title-line">LINE BOT表示確認</span></h1>
+      <p>新着情報の画像がHPとLINEにどのように入るかを、現在のデザインを壊さずに確認するための検証ページです。</p>
+    </div>
+  </section>
+  <main>
+    <section class="section integration-status-grid" aria-label="連携準備の状態">
+      <article class="info-card">
+        <p class="eyebrow">Rollback</p>
+        <h2>戻せる状態を確保済み</h2>
+        <p>現時点の良いデザインは Git タグ <span class="keep">checkpoint-good-design-20260708</span> として退避しています。</p>
+      </article>
+      <article class="info-card">
+        <p class="eyebrow">Feed</p>
+        <h2>楽スタHPデータ受け口</h2>
+        <p data-feed-summary>読み込み中</p>
+        <p>本番では楽スタHPまたは中継APIから、同じJSON形式で新着情報・画像・リンクを受け取ります。</p>
+      </article>
+      <article class="info-card">
+        <p class="eyebrow">LINE</p>
+        <h2>画像入りBOTの雛形</h2>
+        <p>LINEでは「大きい画像メッセージ」と「画像付きカード」を使い分けます。下のスマホ表示で見え方を確認できます。</p>
+      </article>
+    </section>
+
+    <section class="section integration-layout">
+      <div>
+        <div class="section__heading">
+          <p class="eyebrow">HP Preview</p>
+          <h2>HP新着情報に入る見え方</h2>
+        </div>
+        <p class="integration-lead">楽スタHPから受けた記事を、既存の新着情報デザインに合わせて表示する想定です。画像が複数ある場合は、スマホで横スワイプになります。</p>
+        <p class="integration-error" data-integration-error hidden></p>
+        <div class="notice-list integration-news-list" data-rakusuta-hp-preview></div>
+      </div>
+
+      <aside class="line-preview-panel" aria-label="LINE BOTプレビュー">
+        <div class="section__heading">
+          <p class="eyebrow">LINE BOT</p>
+          <h2>LINEでの画像表示</h2>
+        </div>
+        <div class="line-phone">
+          <div class="line-phone__bar">
+            <span>勇吉屋BOT</span>
+            <b>LINE</b>
+          </div>
+          <div class="line-chat" data-line-chat-preview></div>
+          <div class="line-rich-menu" aria-label="LINEリッチメニュー想定">
+            <span>新着情報</span>
+            <span>採寸予約</span>
+            <span>店舗</span>
+            <span>商品</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section integration-spec">
+      <div class="section__heading">
+        <p class="eyebrow">Payload</p>
+        <h2>LINEへ送るカードデータ例</h2>
+      </div>
+      <p>LINE Messaging API へ送る Flex Message の形です。画像URLは公開URLに変換して送ります。</p>
+      <pre data-line-payload-preview>読み込み中</pre>
+    </section>
+  </main>
+  <section class="partner-links" aria-label="関連リンク">
+    <div class="partner-links__inner">
+      <span class="partner-links__label">関連リンク</span>
+      <div class="partner-banner-list">
+        <a class="partner-banner partner-banner--tombow" href="https://www.tombow.gr.jp/" target="_blank" rel="noopener noreferrer" aria-label="トンボ学生服 公式サイト"><img src="assets/original/partner-banners/tombow.png" alt="トンボ学生服"></a>
+        <a class="partner-banner partner-banner--kanko" href="https://kanko-gakuseifuku.co.jp/" target="_blank" rel="noopener noreferrer" aria-label="カンコー学生服 公式サイト"><img src="assets/original/partner-banners/kanko.gif" alt="KANKO カンコー学生服"></a>
+        <a class="partner-banner partner-banner--aichikko" href="https://www.pref.aichi.jp/site/kateikyouiku2/katei-ouenkigyou-bosyu.html" target="_blank" rel="noopener noreferrer" aria-label="あいちっこ 家庭教育応援企業"><img src="assets/original/partner-banners/aichikko.png" alt="あいちっこ 家庭教育応援企業"></a>
+      </div>
+    </div>
+  </section>
+  <footer class="site-footer">
+    <div>
+      <strong>勇吉屋</strong>
+      <p>豊田市で<span class="keep">創業78年</span>の<span class="keep">学生衣料品販売専門店</span>です。良いものを永く着る。という節約を勇吉屋では薦めております。</p>
+    </div>
+    <div class="footer-stores">
+      <p><b>本店</b> <a href="tel:0565331155">0565-33-1155</a> / 9：30～19：30 / 火曜日定休</p><p><b>髙橋店</b> <a href="tel:0565805050">0565-80-5050</a> / 10：00～19：30 / 月曜日定休</p>
+    </div>
+  </footer>
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/rakusuta-line-preview.js"></script>
+</body>
+</html>

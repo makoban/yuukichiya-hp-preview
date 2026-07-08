@@ -1,0 +1,119 @@
+{
+  "schemaVersion": "2026-07-08.rakusuta-news.v1",
+  "source": {
+    "name": "楽スタHP",
+    "mode": "sample",
+    "updatedAt": "2026-07-08T22:00:00+09:00",
+    "notes": "本番では楽スタHPまたは中継APIから同じ形式で出力します。"
+  },
+  "items": [
+    {
+      "id": "rakusuta-sample-catalog-2027",
+      "status": "published",
+      "category": "新着情報",
+      "publishedAt": "2026-07-08",
+      "title": "2027年度版 中学校制服カタログが完成しました",
+      "excerpt": "2027年度版の中学校制服カタログを店頭でお渡ししています。採寸予約前の確認にご利用ください。",
+      "body": "対象小学校へ順次配布予定です。お急ぎの場合は、ご来店またはお電話でご相談ください。",
+      "targetStores": ["本店", "髙橋店"],
+      "images": [
+        {
+          "url": "assets/original/home/catalog-2027-01.jpg",
+          "alt": "2027年度版 中学校制服カタログ 表紙",
+          "role": "main"
+        },
+        {
+          "url": "assets/original/home/catalog-2027-02.jpg",
+          "alt": "2027年度版 中学校制服カタログ 紙面",
+          "role": "detail"
+        },
+        {
+          "url": "assets/original/home/catalog-2027-03.jpg",
+          "alt": "2027年度版 中学校制服カタログ 紙面",
+          "role": "detail"
+        }
+      ],
+      "links": [
+        {
+          "label": "本店の採寸予約",
+          "url": "https://airrsv.net/yuukichiya/calendar"
+        },
+        {
+          "label": "髙橋店の採寸予約",
+          "url": "https://airrsv.net/yuukichiyatakahashi/calendar"
+        }
+      ],
+      "line": {
+        "enabled": true,
+        "layout": "image-plus-card",
+        "imageMode": "large-preview"
+      }
+    },
+    {
+      "id": "rakusuta-sample-rental-2026",
+      "status": "published",
+      "category": "レンタル",
+      "publishedAt": "2026-07-08",
+      "title": "小学校卒業式用レンタル服のご案内",
+      "excerpt": "卒業の晴れの日を、特別な一着で。勇吉屋では小学校卒業式用レンタル服を多数ご用意しています。",
+      "body": "人気ブランドの新作も入荷しています。ご来店予約は不要ですので、お気軽にお立ち寄りください。",
+      "targetStores": ["本店", "髙橋店"],
+      "images": [
+        {
+          "url": "assets/original/home/rental-2026-01.jpg",
+          "alt": "小学校卒業式用レンタル服のご案内 女子",
+          "role": "main"
+        },
+        {
+          "url": "assets/original/home/rental-2026-02.jpg",
+          "alt": "小学校卒業式用レンタル服のご案内 男子",
+          "role": "detail"
+        }
+      ],
+      "links": [
+        {
+          "label": "店舗を確認",
+          "url": "stores.html"
+        }
+      ],
+      "line": {
+        "enabled": true,
+        "layout": "carousel-card",
+        "imageMode": "large-preview"
+      }
+    },
+    {
+      "id": "rakusuta-sample-swim-2026",
+      "status": "published",
+      "category": "セール",
+      "publishedAt": "2026-07-08",
+      "title": "小学校 水着・体育用品セールのご案内",
+      "excerpt": "小学校のお客様向けに、水着・体育用品をお得に購入いただけるセールを開催しています。",
+      "body": "チラシをご持参いただくと、対象商品が10%OFFになります。チラシをお持ちでないお客様も、画面提示で割引対象です。",
+      "targetStores": ["本店", "髙橋店"],
+      "images": [
+        {
+          "url": "assets/original/notice-swim-2026-a.jpg",
+          "alt": "小学校 水着・体育用品セールの告知画像",
+          "role": "main"
+        },
+        {
+          "url": "assets/original/notice-swim-2026-b.jpg",
+          "alt": "小学校 水着・体育用品セールの告知画像",
+          "role": "detail"
+        }
+      ],
+      "links": [
+        {
+          "label": "水着用品を見る",
+          "url": "https://yuukichiya.base.shop/categories/5004492"
+        }
+      ],
+      "line": {
+        "enabled": true,
+        "layout": "image-plus-card",
+        "imageMode": "large-preview"
+      }
+    }
+  ]
+}
