@@ -400,6 +400,10 @@ p {
   gap: 28px;
 }
 
+.notice-list[hidden] {
+  display: none !important;
+}
+
 .notice,
 .product-item,
 .school-card,
