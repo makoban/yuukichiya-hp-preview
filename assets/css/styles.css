@@ -429,6 +429,21 @@ p {
   margin-top: 10px;
 }
 
+.notice__details {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  margin-bottom: 12px;
+  padding: 6px 10px;
+  border: 1px solid rgba(41, 139, 92, .22);
+  border-radius: 8px;
+  background: var(--mist);
+  color: var(--green);
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1.55;
+}
+
 .notice__media {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -750,6 +765,39 @@ p {
 
 .live-notice .notice__media a {
   display: block;
+}
+
+.news-archive-link {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.news-archive-section {
+  width: min(980px, calc(100% - 10vw));
+}
+
+.news-pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 8px 0 0;
+}
+
+.news-pager .text-link {
+  margin-top: 0;
+}
+
+.news-pager .is-disabled {
+  color: var(--muted);
+  opacity: .42;
+  pointer-events: none;
+}
+
+.news-empty {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 190px;
 }
 
 .store-grid {
@@ -2289,6 +2337,7 @@ button.shop-month-calendar__day:focus-visible {
 
   .welcome-card,
   .notice__media img,
+  .notice__media a,
   .school-card__media img,
   .support-banner,
   .support-banner-image {

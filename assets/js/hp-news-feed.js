@@ -1,8 +1,10 @@
-const feedTargets = document.querySelectorAll("[data-hp-news-feed]");
+const YUUKICHIYA_NEWS_API_BASE =
+  window.yuukichiyaNewsApiBase || "https://kokotomo-sns.bantex.jp/api/public/hp-news/yuukichiya";
+const DEFAULT_NEWS_LIMIT = 3;
 
 const newsFormatDate = (value) => {
   if (!value) return "";
-  const date = new Date(value.includes("T") ? value : `${value}T00:00:00+09:00`);
+  const date = new Date(String(value).includes("T") ? value : `${value}T00:00:00+09:00`);
   if (Number.isNaN(date.getTime())) return value;
   return date.toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric" });
 };
@@ -21,76 +23,177 @@ const newsCreateElement = (tagName, className, text) => {
 };
 
 const normalizeNewsItems = (payload) => {
-  const items = payload.items || payload.posts || [];
-  return items
-    .filter((item) => item.status === "published")
+  const source = Array.isArray(payload)
+    ? payload
+    : payload.latest || payload.items || payload.posts || [];
+  return source
+    .filter((item) => !item.status || item.status === "published")
     .sort((first, second) => String(second.publishedAt || "").localeCompare(String(first.publishedAt || "")));
 };
 
+const newsFetchJson = async (url) => {
+  const response = await fetch(url, { cache: "no-store" });
+  if (!response.ok) throw new Error(`news feed error: ${response.status}`);
+  return response.json();
+};
+
 const renderNewsImages = (item) => {
-  const media = newsCreateElement("div", item.images?.length > 2 ? "notice__media notice__media--three" : "notice__media");
-  (item.images || []).slice(0, 6).forEach((image) => {
+  if (!item.images?.length) return null;
+  const media = newsCreateElement(
+    "div",
+    item.images.length > 2 ? "notice__media notice__media--three" : "notice__media",
+  );
+  item.images.slice(0, 6).forEach((image) => {
+    const url = newsResolveUrl(image.url);
+    if (!url) return;
     const anchor = document.createElement("a");
-    anchor.href = newsResolveUrl(image.url);
+    anchor.href = url;
     anchor.target = "_blank";
     anchor.rel = "noopener noreferrer";
     const img = document.createElement("img");
-    img.src = newsResolveUrl(image.url);
+    img.src = url;
     img.alt = image.alt || item.title || "勇吉屋のお知らせ画像";
     img.loading = "lazy";
     img.decoding = "async";
     anchor.append(img);
     media.append(anchor);
   });
-  return media;
+  return media.childElementCount ? media : null;
+};
+
+const appendNewsParagraphs = (copy, text) => {
+  String(text || "")
+    .split(/\n{1,}/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .forEach((line) => copy.append(newsCreateElement("p", "", line)));
 };
 
 const renderNewsItem = (item) => {
   const article = newsCreateElement("article", "notice live-notice");
   const copy = newsCreateElement("div", "notice__copy");
-  copy.append(
-    newsCreateElement("p", "integration-card-meta", `${item.category || "新着情報"} / ${newsFormatDate(item.publishedAt)}`),
-    newsCreateElement("h3", "", item.title || "勇吉屋からのお知らせ"),
-  );
+  const metaText = [item.category || "新着情報", newsFormatDate(item.publishedAt)]
+    .filter(Boolean)
+    .join(" / ");
+  if (metaText) copy.append(newsCreateElement("p", "integration-card-meta", metaText));
+  copy.append(newsCreateElement("h3", "", item.title || "勇吉屋からのお知らせ"));
 
-  if (item.excerpt) copy.append(newsCreateElement("p", "", item.excerpt));
-  if (item.body) copy.append(newsCreateElement("p", "", item.body));
+  if (item.eventDateText || item.venue) {
+    const detail = newsCreateElement("p", "notice__details");
+    detail.textContent = [item.eventDateText, item.venue].filter(Boolean).join(" / ");
+    copy.append(detail);
+  }
+
+  if (item.body) {
+    appendNewsParagraphs(copy, item.body);
+  } else if (item.excerpt) {
+    copy.append(newsCreateElement("p", "", item.excerpt));
+  }
 
   if (item.links?.length) {
     const actions = newsCreateElement("div", "notice-actions");
     item.links.forEach((link) => {
-      const anchor = newsCreateElement("a", "text-link", link.label);
-      anchor.href = newsResolveUrl(link.url);
-      if (/^https?:\/\//.test(link.url)) {
+      const url = newsResolveUrl(link.url);
+      if (!url) return;
+      const anchor = newsCreateElement("a", "text-link", link.label || "詳しく見る");
+      anchor.href = url;
+      if (/^https?:\/\//.test(url)) {
         anchor.target = "_blank";
         anchor.rel = "noopener noreferrer";
       }
       actions.append(anchor);
     });
-    copy.append(actions);
+    if (actions.childElementCount) copy.append(actions);
   }
 
   article.append(copy);
-  if (item.images?.length) article.append(renderNewsImages(item));
+  const media = renderNewsImages(item);
+  if (media) article.append(media);
   return article;
 };
 
-const renderNewsFeed = async (target) => {
-  const feedUrl = target.dataset.newsFeed || window.yuukichiyaNewsFeedUrl || "";
-  if (!feedUrl) return;
+const findFallbackList = (target) => {
+  const selector = target.dataset.newsFallback;
+  if (selector) return document.querySelector(selector);
+  const next = target.nextElementSibling;
+  return next?.matches(".notice-list") ? next : null;
+};
 
-  const response = await fetch(feedUrl, { cache: "no-store" });
-  if (!response.ok) throw new Error(`news feed error: ${response.status}`);
-  const payload = await response.json();
-  const items = normalizeNewsItems(payload);
-  if (!items.length) return;
+const renderLatestNewsFeed = async (target) => {
+  const feedUrl = target.dataset.newsFeed || `${YUUKICHIYA_NEWS_API_BASE}/latest.json`;
+  const fallback = findFallbackList(target);
+  const limit = Number.parseInt(target.dataset.newsLimit || `${DEFAULT_NEWS_LIMIT}`, 10) || DEFAULT_NEWS_LIMIT;
+  const payload = await newsFetchJson(feedUrl);
+  const items = normalizeNewsItems(payload).slice(0, limit);
+  if (!items.length) throw new Error("news feed empty");
 
   target.replaceChildren(...items.map(renderNewsItem));
   target.hidden = false;
+  if (fallback) fallback.hidden = true;
 };
 
-feedTargets.forEach((target) => {
-  renderNewsFeed(target).catch(() => {
+const archiveUrlWithPage = (url, page) => {
+  const parsed = new URL(url, window.location.href);
+  parsed.searchParams.set("page", String(page));
+  return parsed.toString();
+};
+
+const currentArchivePage = () => {
+  const page = Number.parseInt(new URLSearchParams(window.location.search).get("page") || "1", 10);
+  return Number.isFinite(page) && page > 0 ? page : 1;
+};
+
+const renderArchivePager = (payload, page) => {
+  if (!payload.hasPrev && !payload.hasNext) return null;
+  const pager = newsCreateElement("nav", "news-pager");
+  pager.setAttribute("aria-label", "過去のお知らせページ");
+  const prev = newsCreateElement("a", payload.hasPrev ? "text-link" : "text-link is-disabled", "前へ");
+  prev.href = payload.hasPrev ? `news.html?page=${Math.max(1, page - 1)}` : "#";
+  const next = newsCreateElement("a", payload.hasNext ? "text-link" : "text-link is-disabled", "次へ");
+  next.href = payload.hasNext ? `news.html?page=${page + 1}` : "#";
+  pager.append(prev, next);
+  return pager;
+};
+
+const renderArchiveNewsFeed = async (target) => {
+  const page = currentArchivePage();
+  const feedUrl = archiveUrlWithPage(target.dataset.newsArchive || `${YUUKICHIYA_NEWS_API_BASE}/archive.json`, page);
+  const payload = await newsFetchJson(feedUrl);
+  const items = normalizeNewsItems(payload);
+  if (!items.length) {
+    const empty = newsCreateElement("div", "notice news-empty");
+    empty.append(
+      newsCreateElement("h3", "", page === 1 ? "過去のお知らせはまだありません" : "このページのお知らせはありません"),
+      newsCreateElement("p", "", "最新のお知らせはトップページの新着情報に表示されます。"),
+    );
+    target.replaceChildren(empty);
+    target.hidden = false;
+    return;
+  }
+
+  const children = items.map(renderNewsItem);
+  const pager = renderArchivePager(payload, page);
+  if (pager) children.push(pager);
+  target.replaceChildren(...children);
+  target.hidden = false;
+};
+
+document.querySelectorAll("[data-hp-news-feed]").forEach((target) => {
+  renderLatestNewsFeed(target).catch(() => {
     target.hidden = true;
+    const fallback = findFallbackList(target);
+    if (fallback) fallback.hidden = false;
+  });
+});
+
+document.querySelectorAll("[data-hp-news-archive]").forEach((target) => {
+  renderArchiveNewsFeed(target).catch(() => {
+    target.hidden = false;
+    const empty = newsCreateElement("div", "notice news-empty");
+    empty.append(
+      newsCreateElement("h3", "", "過去のお知らせを読み込めませんでした"),
+      newsCreateElement("p", "", "時間をおいて再度ご確認ください。"),
+    );
+    target.replaceChildren(empty);
   });
 });

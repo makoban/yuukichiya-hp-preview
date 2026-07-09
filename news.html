@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>新着情報一覧 | 勇吉屋</title>
+  <meta name="description" content="勇吉屋の過去のお知らせ一覧です。制服、体操服、通学用品、セール、採寸予約に関する情報を掲載しています。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&family=Zen+Old+Mincho:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="勇吉屋 ホーム">
+      <img src="assets/original/logo.png" alt="豊田市内の勇吉屋へ">
+      <span>学生衣料専門店</span>
+    </a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span><b>メニュー</b></button>
+    <nav class="site-nav" id="site-nav" aria-label="主要ナビゲーション">
+      <a href="index.html">ホーム</a><a href="products.html">商品一覧</a><a href="services.html">サービス</a><a href="schools.html">取扱校</a><a href="stores.html">店舗・アクセス</a><a href="contact.html">お問い合わせ</a>
+    </nav>
+  </header>
+  <style>
+  .page-bg-news-hero-jpg { background-image: linear-gradient(90deg, rgba(15, 33, 58, .86), rgba(15, 33, 58, .34)), url('assets/generated/hero-uniform-hall.jpg'); }
+  @media (max-width: 640px) {
+    .page-bg-news-hero-jpg { background-image: linear-gradient(90deg, rgba(15, 33, 58, .86), rgba(15, 33, 58, .34)), url('assets/generated/hero-uniform-hall-mobile.jpg'); }
+  }
+  </style>
+
+  <section class="page-hero page-bg-news-hero-jpg">
+    <div>
+      <p class="eyebrow">News</p>
+      <h1>新着情報一覧</h1>
+      <p>トップページの最新3件から移動した、過去のお知らせを掲載しています。</p>
+    </div>
+  </section>
+
+  <main>
+    <section class="section news-archive-section">
+      <div class="section__heading">
+        <p class="eyebrow">Archive</p>
+        <h2>過去のお知らせ</h2>
+      </div>
+      <div class="notice-list news-archive-list" data-hp-news-archive data-news-archive="https://kokotomo-sns.bantex.jp/api/public/hp-news/yuukichiya/archive.json" hidden></div>
+      <div class="news-archive-link">
+        <a class="text-link" href="index.html">トップページへ戻る</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div>
+      <strong>勇吉屋</strong>
+      <p>豊田市で<span class="keep">創業78年</span>の<span class="keep">学生衣料品販売専門店</span>です。良いものを永く着る。という節約を勇吉屋では薦めております。</p>
+    </div>
+    <div class="footer-stores">
+      <p><b>本店</b> <a href="tel:0565331155">0565-33-1155</a> / 9：30～19：30 / 火曜日定休</p><p><b>髙橋店</b> <a href="tel:0565805050">0565-80-5050</a> / 10：00～19：30 / 月曜日定休</p>
+    </div>
+  </footer>
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/hp-news-feed.js"></script>
+</body>
+</html>
