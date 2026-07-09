@@ -53,7 +53,8 @@ const renderNewsImages = (item) => {
     const img = document.createElement("img");
     img.src = url;
     img.alt = image.alt || item.title || "勇吉屋のお知らせ画像";
-    img.loading = "lazy";
+    img.loading = "eager";
+    img.fetchPriority = "low";
     img.decoding = "async";
     anchor.append(img);
     media.append(anchor);

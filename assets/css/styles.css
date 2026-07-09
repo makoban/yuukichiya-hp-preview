@@ -768,7 +768,21 @@ p {
 }
 
 .live-notice .notice__media a {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  background: var(--paper);
+}
+
+.home-news-column .live-notice .notice__media a:only-child {
+  grid-column: 1 / -1;
+}
+
+.live-notice .notice__media img {
+  height: 100%;
+  max-height: none;
+  object-fit: contain;
 }
 
 .news-archive-link {
