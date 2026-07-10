@@ -806,14 +806,59 @@ p {
 }
 
 .news-pager {
-  display: flex;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 8px 0 0;
+  display: grid;
+  grid-template-columns: minmax(96px, auto) minmax(0, 1fr) minmax(96px, auto);
+  align-items: center;
+  gap: 12px;
+  grid-column: 1 / -1;
+  padding: 18px 0 0;
 }
 
-.news-pager .text-link {
-  margin-top: 0;
+.news-pager__pages {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.news-pager__control,
+.news-pager__page {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--navy);
+  font-weight: 900;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.news-pager__control {
+  min-height: 42px;
+  padding: 0 14px;
+}
+
+.news-pager__control:last-child {
+  justify-self: end;
+}
+
+.news-pager__page {
+  width: 38px;
+  height: 38px;
+}
+
+.news-pager__control:hover,
+.news-pager__page:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.news-pager .is-current {
+  border-color: var(--navy);
+  background: var(--navy);
+  color: var(--white);
 }
 
 .news-pager .is-disabled {
@@ -2616,6 +2661,29 @@ button.shop-month-calendar__day:focus-visible {
 
   .partner-banner {
     width: 176px;
+  }
+
+  .news-pager {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .news-pager__pages {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .news-pager__control {
+    width: 100%;
+    grid-row: 2;
+  }
+
+  .news-pager__control:first-child {
+    grid-column: 1;
+  }
+
+  .news-pager__control:last-child {
+    grid-column: 2;
   }
 
   dl {

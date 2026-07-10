@@ -144,23 +144,64 @@ const currentArchivePage = () => {
   return Number.isFinite(page) && page > 0 ? page : 1;
 };
 
+const archivePageHref = (page) => `news.html?page=${page}`;
+
+const renderArchivePagerControl = ({ label, page, disabled = false, current = false, className = "" }) => {
+  const element = newsCreateElement(
+    disabled || current ? "span" : "a",
+    `${className}${disabled ? " is-disabled" : ""}${current ? " is-current" : ""}`,
+    label,
+  );
+  if (disabled) element.setAttribute("aria-disabled", "true");
+  if (current) element.setAttribute("aria-current", "page");
+  if (!disabled && !current) element.href = archivePageHref(page);
+  return element;
+};
+
 const renderArchivePager = (payload, page) => {
-  if (!payload.hasPrev && !payload.hasNext) return null;
+  const totalPages = Math.min(10, Math.max(1, Number.parseInt(payload.totalPages || "1", 10) || 1));
+  const resolvedPage = Math.min(totalPages, Math.max(1, Number.parseInt(page || "1", 10) || 1));
+  if (totalPages <= 1) return null;
+
   const pager = newsCreateElement("nav", "news-pager");
   pager.setAttribute("aria-label", "過去のお知らせページ");
-  const prev = newsCreateElement("a", payload.hasPrev ? "text-link" : "text-link is-disabled", "前へ");
-  prev.href = payload.hasPrev ? `news.html?page=${Math.max(1, page - 1)}` : "#";
-  const next = newsCreateElement("a", payload.hasNext ? "text-link" : "text-link is-disabled", "次へ");
-  next.href = payload.hasNext ? `news.html?page=${page + 1}` : "#";
-  pager.append(prev, next);
+  const prev = renderArchivePagerControl({
+    label: "← 前へ",
+    page: resolvedPage - 1,
+    disabled: resolvedPage === 1,
+    className: "news-pager__control",
+  });
+  const pages = newsCreateElement("div", "news-pager__pages");
+  for (let pageNumber = 1; pageNumber <= totalPages; pageNumber += 1) {
+    pages.append(renderArchivePagerControl({
+      label: String(pageNumber),
+      page: pageNumber,
+      current: pageNumber === resolvedPage,
+      className: "news-pager__page",
+    }));
+  }
+  const next = renderArchivePagerControl({
+    label: "次へ →",
+    page: resolvedPage + 1,
+    disabled: resolvedPage === totalPages,
+    className: "news-pager__control",
+  });
+  pager.append(prev, pages, next);
   return pager;
 };
 
 const renderArchiveNewsFeed = async (target) => {
-  const page = currentArchivePage();
-  const feedUrl = archiveUrlWithPage(target.dataset.newsArchive || `${YUUKICHIYA_NEWS_API_BASE}/archive.json`, page);
+  const requestedPage = currentArchivePage();
+  const feedUrl = archiveUrlWithPage(target.dataset.newsArchive || `${YUUKICHIYA_NEWS_API_BASE}/archive.json`, requestedPage);
   const payload = await newsFetchJson(feedUrl);
-  const items = normalizeNewsItems(payload);
+  const page = Math.max(1, Number.parseInt(payload.page || `${requestedPage}`, 10) || 1);
+  const pageSize = Math.max(1, Number.parseInt(payload.pageSize || "3", 10) || 3);
+  const items = normalizeNewsItems(payload).slice(0, pageSize);
+  if (page !== requestedPage) {
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.set("page", String(page));
+    window.history.replaceState({}, "", currentUrl);
+  }
   if (!items.length) {
     const empty = newsCreateElement("div", "notice news-empty");
     empty.append(
