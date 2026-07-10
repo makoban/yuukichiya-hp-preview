@@ -2380,6 +2380,26 @@ button.shop-month-calendar__day:focus-visible {
     object-fit: contain;
   }
 
+  .live-notice .notice__media,
+  .home-news-column .live-notice .notice__media--three {
+    display: grid;
+    grid-template-columns: 1fr;
+    overflow-x: visible;
+    padding-bottom: 0;
+    scroll-snap-type: none;
+  }
+
+  .live-notice .notice__media a,
+  .live-notice .notice__media img {
+    width: 100%;
+    max-width: none;
+    height: auto;
+    max-height: none;
+    flex: none;
+    aspect-ratio: auto;
+    scroll-snap-align: none;
+  }
+
   .school-card__media img {
     max-height: 420px;
   }
