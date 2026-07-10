@@ -767,6 +767,16 @@ p {
   margin-bottom: 22px;
 }
 
+.live-notice {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.live-notice > .notice__copy,
+.live-notice > .notice__media {
+  width: 100%;
+  min-width: 0;
+}
+
 .live-notice .notice__media a {
   display: flex;
   align-items: center;
