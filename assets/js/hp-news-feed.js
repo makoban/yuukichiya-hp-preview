@@ -70,6 +70,43 @@ const appendNewsParagraphs = (copy, text) => {
     .forEach((line) => copy.append(newsCreateElement("p", "", line)));
 };
 
+let newsCollapseSequence = 0;
+
+const setupMobileNewsCollapsibles = (root = document) => {
+  root.querySelectorAll(".home-news-column .notice, .news-archive-list .notice").forEach((article) => {
+    if (article.dataset.newsCollapseReady === "true") return;
+    const copy = article.querySelector(".notice__copy");
+    const title = copy?.querySelector("h3");
+    if (!copy || !title) return;
+
+    newsCollapseSequence += 1;
+    const content = newsCreateElement("div", "news-collapsible-copy");
+    content.id = `news-collapsible-content-${newsCollapseSequence}`;
+    let followingNode = title.nextSibling;
+    while (followingNode) {
+      const nextNode = followingNode.nextSibling;
+      content.append(followingNode);
+      followingNode = nextNode;
+    }
+
+    const toggle = newsCreateElement("button", "news-collapse-toggle", "内容を見る");
+    toggle.type = "button";
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-controls", content.id);
+    toggle.addEventListener("click", () => {
+      const expanded = article.dataset.newsExpanded !== "true";
+      article.dataset.newsExpanded = String(expanded);
+      toggle.setAttribute("aria-expanded", String(expanded));
+      toggle.textContent = expanded ? "閉じる" : "内容を見る";
+    });
+
+    copy.append(toggle, content);
+    article.classList.add("is-mobile-collapsible");
+    article.dataset.newsExpanded = "false";
+    article.dataset.newsCollapseReady = "true";
+  });
+};
+
 const renderNewsItem = (item) => {
   const article = newsCreateElement("article", "notice live-notice");
   const copy = newsCreateElement("div", "notice__copy");
@@ -130,6 +167,7 @@ const renderLatestNewsFeed = async (target) => {
 
   target.replaceChildren(...items.map(renderNewsItem));
   target.hidden = false;
+  setupMobileNewsCollapsibles(target);
   if (fallback) fallback.hidden = true;
 };
 
@@ -218,7 +256,10 @@ const renderArchiveNewsFeed = async (target) => {
   if (pager) children.push(pager);
   target.replaceChildren(...children);
   target.hidden = false;
+  setupMobileNewsCollapsibles(target);
 };
+
+setupMobileNewsCollapsibles();
 
 document.querySelectorAll("[data-hp-news-feed]").forEach((target) => {
   renderLatestNewsFeed(target).catch(() => {

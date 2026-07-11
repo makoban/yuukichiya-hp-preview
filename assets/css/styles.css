@@ -795,6 +795,10 @@ p {
   object-fit: contain;
 }
 
+.news-collapse-toggle {
+  display: none;
+}
+
 .news-archive-link {
   display: flex;
   justify-content: flex-end;
@@ -2336,6 +2340,51 @@ button.shop-month-calendar__day:focus-visible {
 
   .notice__copy h3 {
     font-size: 25px;
+  }
+
+  .notice.is-mobile-collapsible {
+    gap: 14px;
+  }
+
+  .notice.is-mobile-collapsible .notice__copy h3 {
+    margin-bottom: 12px;
+  }
+
+  .news-collapse-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 46px;
+    padding: 0 14px;
+    border: 1px solid rgba(41, 139, 92, .28);
+    border-radius: 8px;
+    background: var(--mist);
+    color: var(--green);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  .news-collapse-toggle::after {
+    content: "+";
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .news-collapse-toggle[aria-expanded="true"]::after {
+    content: "−";
+  }
+
+  .notice.is-mobile-collapsible[data-news-expanded="false"] .news-collapsible-copy,
+  .notice.is-mobile-collapsible[data-news-expanded="false"] > .notice__media {
+    display: none;
+  }
+
+  .notice.is-mobile-collapsible[data-news-expanded="true"] .news-collapsible-copy {
+    padding-top: 14px;
   }
 
   .welcome-gallery {
