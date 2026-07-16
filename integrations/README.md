@@ -71,6 +71,48 @@ ADMIN_TOKEN=...
 
 `ADMIN_TOKEN` はダッシュボードからWorker APIを操作するための管理トークンです。
 
+## Googleカレンダー連携
+
+HPのブラウザからGoogle Calendar APIを直接呼ばず、楽スタ／Kokotomoの公開用中継APIを参照します。
+
+```text
+Googleカレンダー
+  ↓ GOOGLE_CALENDAR_API_KEY（サーバーの環境変数）
+楽スタ／Kokotomo中継API
+  ↓ 公開予定だけのJSON
+勇吉屋HP
+```
+
+HP側の参照先:
+
+```text
+https://kokotomo-sns.bantex.jp/api/public/hp-calendar/yuukichiya/events.json
+```
+
+サーバー側に追加する環境変数:
+
+```text
+GOOGLE_CALENDAR_API_KEY=...
+```
+
+このキーは既存の `GOOGLE_API_KEY` や `GEMINI_API_KEY` と共有せず、Google CloudでGoogle Calendar APIだけに制限した専用キーを使います。HTML、JavaScript、Gitには値を書きません。
+
+### 本番反映順序
+
+1. Google Cloudで専用キーを作り、利用APIをGoogle Calendar APIだけに制限する
+2. Renderの楽スタ／Kokotomo Dashboardサービスへ `GOOGLE_CALENDAR_API_KEY` を登録する
+3. Dashboardをデプロイし、公開カレンダーAPIがHTTP 200を返すことを確認する
+4. 勇吉屋HPを反映し、Googleカレンダーの追加・変更がHPへ表示されることを確認する
+5. 以前HPで使っていたカレンダー用キーが残っていれば無効化する
+
+公開API確認:
+
+```bash
+curl -fsS https://kokotomo-sns.bantex.jp/api/public/hp-calendar/yuukichiya/events.json
+```
+
+APIが未設定または一時停止している間、HPは `assets/data/calendar-events.json` の保存データへ自動的に切り替わります。
+
 ## Cloudflare設定
 
 Cloudflareへログイン後に実行します。

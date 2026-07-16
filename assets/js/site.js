@@ -8,8 +8,11 @@ if (toggle && nav) {
   });
 }
 
-const googleCalendarAccess = window.yuukichiyaGoogleCalendarAccess || "";
+const publicCalendarFeedUrl =
+  window.yuukichiyaCalendarFeedUrl ||
+  "https://kokotomo-sns.bantex.jp/api/public/hp-calendar/yuukichiya/events.json";
 const closureTitlePattern = /休業|定休日|臨時休業|夏季休業|冬季休業|年末年始|休み/;
+let publicCalendarFeedPromise;
 
 const storeCalendarSettings = {
   main: {
@@ -86,18 +89,6 @@ const getVisibleMonths = (baseDate = new Date(), count = 3) => {
       month: monthDate.getMonth() + 1,
     };
   });
-};
-
-const getCalendarTimeRange = (months) => {
-  const firstMonth = months[0];
-  const lastMonth = months[months.length - 1];
-  const start = new Date(firstMonth.year, firstMonth.month - 1, 1);
-  const end = new Date(lastMonth.year, lastMonth.month, 1);
-
-  return {
-    timeMin: `${formatDateKey(start)}T00:00:00+09:00`,
-    timeMax: `${formatDateKey(end)}T00:00:00+09:00`,
-  };
 };
 
 const stripHtml = (value = "") => {
@@ -250,28 +241,36 @@ const normalizeGoogleEvent = (event) => {
   });
 };
 
-const fetchGoogleEvents = async (store, months) => {
-  if (!googleCalendarAccess || !store.calendarId) return [];
-
-  const { timeMin, timeMax } = getCalendarTimeRange(months);
-  const endpoint = new URL(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(store.calendarId)}/events`);
-  endpoint.searchParams.set("key", googleCalendarAccess);
-  endpoint.searchParams.set("timeMin", timeMin);
-  endpoint.searchParams.set("timeMax", timeMax);
-  endpoint.searchParams.set("singleEvents", "true");
-  endpoint.searchParams.set("orderBy", "startTime");
-  endpoint.searchParams.set("timeZone", "Asia/Tokyo");
-
-  const response = await fetch(endpoint);
+const fetchPublicCalendarFeed = async () => {
+  const response = await fetch(publicCalendarFeedUrl, {
+    headers: { Accept: "application/json" },
+  });
   if (!response.ok) {
-    throw new Error(`Google Calendar API error: ${response.status}`);
+    throw new Error(`Public calendar API error: ${response.status}`);
   }
 
   const payload = await response.json();
-  return (payload.items || [])
-    .filter((event) => event.status !== "cancelled")
-    .map(normalizeGoogleEvent)
-    .filter(Boolean);
+  if (!payload || typeof payload.stores !== "object") {
+    throw new Error("Public calendar API returned an invalid payload");
+  }
+  return payload;
+};
+
+const getPublicCalendarFeed = () => {
+  if (!publicCalendarFeedPromise) {
+    publicCalendarFeedPromise = fetchPublicCalendarFeed();
+  }
+  return publicCalendarFeedPromise;
+};
+
+const fetchPublicCalendarEvents = async (store, months) => {
+  const payload = await getPublicCalendarFeed();
+  return filterEventsToMonths(
+    getSnapshotEntries(payload, store)
+      .map(normalizeGoogleEvent)
+      .filter(Boolean),
+    months,
+  );
 };
 
 const getPreviewEvents = (store, months) => {
@@ -547,28 +546,29 @@ document.querySelectorAll(".shop-calendar-list[data-store-calendar]").forEach((t
   const baseEvents = [...fallbackEvents, ...previewEvents];
   renderStoreCalendar(target, visibleMonths, getDedupedEvents(baseEvents), store.label);
 
-  fetchSnapshotEvents(store, visibleMonths)
-    .then((snapshotEvents) => {
+  fetchPublicCalendarEvents(store, visibleMonths)
+    .then((publicEvents) => {
       renderStoreCalendar(
         target,
         visibleMonths,
-        getDedupedEvents([...baseEvents, ...snapshotEvents]),
+        getDedupedEvents([...baseEvents, ...publicEvents]),
         store.label,
       );
-
-      return fetchGoogleEvents(store, visibleMonths)
-        .then((googleEvents) => {
-          if (!googleEvents.length) return;
-
+      target.dataset.calendarSource = "public-api";
+    })
+    .catch(() => {
+      target.dataset.calendarSource = "snapshot";
+      return fetchSnapshotEvents(store, visibleMonths)
+        .then((snapshotEvents) => {
           renderStoreCalendar(
             target,
             visibleMonths,
-            getDedupedEvents([...baseEvents, ...snapshotEvents, ...googleEvents]),
+            getDedupedEvents([...baseEvents, ...snapshotEvents]),
             store.label,
           );
+        })
+        .catch(() => {
+          target.dataset.calendarSource = "fallback";
         });
-    })
-    .catch(() => {
-      target.dataset.calendarSource = "fallback";
     });
 });
