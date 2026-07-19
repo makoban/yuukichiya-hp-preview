@@ -22,19 +22,62 @@
       <a href="index.html" class="is-current">ホーム</a><a href="products.html" class="">商品一覧</a><a href="services.html" class="">サービス</a><a href="schools.html" class="">取扱校</a><a href="stores.html" class="">店舗・アクセス</a><a href="contact.html" class="">お問い合わせ</a>
     </nav>
   </header>
-  <style>
-  .hero-bg-hero-uniform-hall-jpg { background-image: linear-gradient(90deg, rgba(13, 24, 40, .82) 0%, rgba(13, 24, 40, .58) 40%, rgba(13, 24, 40, .08) 100%), url('assets/generated/hero-uniform-hall.jpg'); }
-  @media (max-width: 640px) {
-    .hero-bg-hero-uniform-hall-jpg { background-image: linear-gradient(90deg, rgba(13, 24, 40, .82) 0%, rgba(13, 24, 40, .58) 40%, rgba(13, 24, 40, .08) 100%), url('assets/generated/hero-uniform-hall-mobile.jpg'); }
-  }
-</style>
-  <section class="hero hero-bg-hero-uniform-hall-jpg">
-    <div class="hero__inner">
-      <p class="eyebrow">豊田市の学生服・セーラー服・体操服専門店</p>
-      <h1><span class="title-line">豊田の学生服館。</span><span class="title-line">良いものを永く着る準備を、</span><span class="title-line">地元で確かに。</span></h1>
-      <p class="hero__lead"><span class="mobile-line">創業78年。市内最多数の商品を取り揃え、</span><span class="mobile-line">制服・体操服・通学用品から</span><span class="mobile-line">修理・補正まで、</span><span class="mobile-line">信頼と実績のある勇吉屋が支えます。</span></p>
-      <div class="hero__actions"><a class="button button--light" href="products.html">商品を見る</a><a class="button " href="stores.html">店舗を確認</a></div>
+  <section class="hero-slider" data-hero-slider aria-roledescription="カルーセル" aria-label="勇吉屋のご案内">
+    <div class="hero-slider__viewport">
+      <article class="hero hero-slide hero-slide--entry is-active" data-hero-slide data-slide-label="新入学の準備" aria-hidden="false">
+        <picture class="hero-slide__media">
+          <source media="(max-width: 640px)" srcset="assets/generated/hero-slide-entry-mobile.jpg">
+          <img src="assets/generated/hero-slide-entry.jpg" alt="桜の季節に勇吉屋本店へ向かう新入学生と家族のイメージ" fetchpriority="high" decoding="async">
+        </picture>
+        <span class="hero-slide__shade" aria-hidden="true"></span>
+        <div class="hero__inner">
+          <p class="eyebrow">新入学の準備</p>
+          <h1><span class="title-line">新しい一歩を、</span><span class="title-line">地元の勇吉屋から。</span></h1>
+          <p class="hero__lead"><span class="mobile-line">採寸から制服・体操服・通学用品まで。</span><span class="mobile-line">新しい学校生活を、まとめて整えます。</span></p>
+          <div class="hero__actions"><a class="button button--light" href="products.html">商品を見る</a><a class="button button--ghost-light" href="schools.html">取扱校を探す</a></div>
+        </div>
+      </article>
+
+      <article class="hero hero-slide hero-slide--takahashi" data-hero-slide data-slide-label="本店と髙橋店" aria-hidden="true">
+        <picture class="hero-slide__media">
+          <source media="(max-width: 640px)" srcset="assets/generated/hero-slide-takahashi-summer-mobile.jpg">
+          <img src="assets/generated/hero-slide-takahashi-summer.jpg" alt="保護者と夏服の学生が勇吉屋髙橋店へ買い物に向かうイメージ" loading="lazy" decoding="async">
+        </picture>
+        <span class="hero-slide__shade" aria-hidden="true"></span>
+        <div class="hero__inner">
+          <p class="eyebrow">本店・髙橋店</p>
+          <h2><span class="title-line">地域と学校を知る、</span><span class="title-line">二つの店。</span></h2>
+          <p class="hero__lead"><span class="mobile-line hero-phrase">創業78年。</span><span class="mobile-line hero-phrase">成長に合う一着を、身近な専門店で。</span></p>
+          <div class="hero__actions"><a class="button button--light" href="stores.html">店舗を確認</a><a class="button button--ghost-light" href="#calendar">営業日を見る</a></div>
+        </div>
+      </article>
+
+      <article class="hero hero-slide hero-slide--fitting" data-hero-slide data-slide-label="採寸とお直し" aria-hidden="true">
+        <picture class="hero-slide__media">
+          <source media="(max-width: 640px)" srcset="assets/generated/hero-slide-fitting-mobile.jpg">
+          <img src="assets/generated/hero-slide-fitting.jpg" alt="勇吉屋で学生服の採寸を受け、通学用品を選ぶ家族のイメージ" loading="lazy" decoding="async">
+        </picture>
+        <span class="hero-slide__shade" aria-hidden="true"></span>
+        <div class="hero__inner">
+          <p class="eyebrow">学生衣料専門店</p>
+          <h2><span class="title-line">採寸も、お直しも。</span><span class="title-line">永く着るために。</span></h2>
+          <p class="hero__lead"><span class="mobile-line">豊富な学校用品と、購入後の修理・補正まで。</span><span class="mobile-line">地元でしっかり支えます。</span></p>
+          <div class="hero__actions"><a class="button button--light" href="services.html">サービスを見る</a><a class="button button--ghost-light" href="#calendar">営業日・予約を見る</a></div>
+        </div>
+      </article>
     </div>
+
+    <div class="hero-slider__controls" aria-label="スライド操作">
+      <button class="hero-slider__arrow" type="button" data-hero-prev aria-label="前のスライド">‹</button>
+      <div class="hero-slider__dots" role="group" aria-label="表示するスライド">
+        <button class="hero-slider__dot is-active" type="button" data-hero-dot="0" aria-label="1枚目 新入学の準備" aria-current="true"></button>
+        <button class="hero-slider__dot" type="button" data-hero-dot="1" aria-label="2枚目 本店と髙橋店" aria-current="false"></button>
+        <button class="hero-slider__dot" type="button" data-hero-dot="2" aria-label="3枚目 採寸とお直し" aria-current="false"></button>
+      </div>
+      <button class="hero-slider__arrow" type="button" data-hero-next aria-label="次のスライド">›</button>
+      <button class="hero-slider__pause" type="button" data-hero-pause aria-label="自動再生を停止"><span aria-hidden="true">Ⅱ</span></button>
+    </div>
+    <p class="sr-only" data-hero-live aria-live="polite">1枚目 新入学の準備</p>
   </section>
   <main>
 

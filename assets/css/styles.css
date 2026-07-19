@@ -76,6 +76,18 @@ p {
   line-height: 1.85;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .site-header {
   position: sticky;
   top: 0;
@@ -158,19 +170,82 @@ p {
   font-size: 12px;
 }
 
-.hero {
+.hero-slider {
+  position: relative;
   min-height: min(720px, 82svh);
+  overflow: clip;
+  isolation: isolate;
+  background: #10213a;
+}
+
+.hero-slider__viewport {
+  position: absolute;
+  inset: 0;
+}
+
+.hero {
   display: grid;
   align-items: end;
-  padding: 120px 5vw 64px;
+  min-height: 100%;
+  padding: 120px 5vw 104px;
   color: var(--white);
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
 }
 
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .8s ease, visibility 0s linear .8s;
+}
+
+.hero-slide.is-active {
+  z-index: 1;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition-delay: 0s;
+}
+
+.hero-slide__media,
+.hero-slide__shade {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-slide__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero-slide__shade {
+  background: linear-gradient(90deg, rgba(13, 24, 40, .86) 0%, rgba(13, 24, 40, .66) 39%, rgba(13, 24, 40, .14) 64%, rgba(13, 24, 40, .03) 100%);
+}
+
+.hero-slide--fitting .hero-slide__shade {
+  background: linear-gradient(90deg, rgba(10, 23, 40, .44) 0%, rgba(10, 23, 40, .18) 42%, rgba(10, 23, 40, 0) 72%);
+}
+
+.hero-slide--takahashi .hero-slide__shade {
+  background: linear-gradient(90deg, rgba(10, 27, 44, .88) 0%, rgba(10, 27, 44, .68) 39%, rgba(10, 27, 44, .17) 64%, rgba(10, 27, 44, .03) 100%);
+}
+
 .hero__inner {
+  position: relative;
+  z-index: 2;
   width: min(760px, 100%);
+  transition: opacity .55s ease .16s, transform .55s ease .16s;
+}
+
+.hero-slide:not(.is-active) .hero__inner {
+  opacity: 0;
+  transform: translateY(14px);
 }
 
 .eyebrow {
@@ -186,7 +261,8 @@ p {
   color: var(--gold);
 }
 
-.hero h1 {
+.hero h1,
+.hero h2 {
   margin-top: 12px;
   font-family: "Noto Serif JP", serif;
   font-size: 54px;
@@ -199,6 +275,12 @@ p {
 
 .mobile-line {
   display: inline;
+}
+
+.hero-phrase {
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
 }
 
 .keep,
@@ -238,6 +320,94 @@ p {
   border-color: var(--white);
   background: var(--white);
   color: var(--navy);
+}
+
+.button--ghost-light {
+  border-color: rgba(255, 255, 255, .88);
+  background: rgba(15, 34, 58, .28);
+  color: var(--white);
+  backdrop-filter: blur(8px);
+}
+
+.button--outline {
+  border-color: var(--navy);
+  background: rgba(255, 255, 255, .42);
+  color: var(--navy);
+}
+
+.hero-slider__controls {
+  position: absolute;
+  right: 5vw;
+  bottom: 24px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px;
+  border: 1px solid rgba(255, 255, 255, .24);
+  border-radius: 999px;
+  background: rgba(13, 24, 40, .78);
+  box-shadow: 0 12px 32px rgba(9, 18, 31, .2);
+  backdrop-filter: blur(12px);
+}
+
+.hero-slider__arrow,
+.hero-slider__pause,
+.hero-slider__dot {
+  appearance: none;
+  border: 0;
+  color: var(--white);
+  background: transparent;
+  cursor: pointer;
+}
+
+.hero-slider__arrow,
+.hero-slider__pause {
+  display: inline-grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 50%;
+  font: 700 24px/1 "Noto Sans JP", sans-serif;
+}
+
+.hero-slider__pause {
+  border-left: 1px solid rgba(255, 255, 255, .2);
+  border-radius: 0 50% 50% 0;
+  font-size: 11px;
+  letter-spacing: -2px;
+}
+
+.hero-slider__arrow:hover,
+.hero-slider__pause:hover {
+  background: rgba(255, 255, 255, .14);
+}
+
+.hero-slider__dots {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.hero-slider__dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, .92);
+  border-radius: 50%;
+}
+
+.hero-slider__dot.is-active {
+  width: 25px;
+  border-radius: 999px;
+  background: var(--white);
+}
+
+.hero-slider__arrow:focus-visible,
+.hero-slider__pause:focus-visible,
+.hero-slider__dot:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
 }
 
 .page-hero {
@@ -2196,7 +2366,8 @@ button.shop-month-calendar__day:focus-visible {
     display: grid;
   }
 
-  .hero h1 {
+  .hero h1,
+  .hero h2 {
     font-size: 40px;
   }
 
@@ -2273,13 +2444,26 @@ button.shop-month-calendar__day:focus-visible {
     display: none;
   }
 
-  .hero {
-    min-height: 650px;
-    padding: 96px 22px 44px;
-    background-position: center top;
+  .hero-slider {
+    min-height: 720px;
   }
 
-  .hero h1 {
+  .hero {
+    min-height: 100%;
+    padding: 92px 18px 96px;
+  }
+
+  .hero-slide__media img {
+    object-position: center top;
+  }
+
+  .hero-slide__shade,
+  .hero-slide--fitting .hero-slide__shade {
+    background: linear-gradient(180deg, rgba(13, 24, 40, 0) 44%, rgba(13, 24, 40, .12) 54%, rgba(13, 24, 40, .42) 100%);
+  }
+
+  .hero h1,
+  .hero h2 {
     font-size: 31px;
     line-height: 1.28;
   }
@@ -2288,6 +2472,37 @@ button.shop-month-calendar__day:focus-visible {
   .page-hero p:not(.eyebrow),
   .lead {
     font-size: 16px;
+  }
+
+  .hero__lead {
+    margin-top: 14px;
+    line-height: 1.72;
+  }
+
+  .hero-slide--takahashi .hero__lead {
+    font-size: 15px;
+  }
+
+  .hero__actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .hero__actions .button {
+    min-width: 0;
+    min-height: 44px;
+    padding: 10px 7px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .hero-slider__controls {
+    right: auto;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .mobile-line {
@@ -2744,5 +2959,16 @@ button.shop-month-calendar__day:focus-visible {
   dl {
     grid-template-columns: 1fr;
     gap: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .hero-slide,
+  .hero__inner {
+    transition: none;
   }
 }
