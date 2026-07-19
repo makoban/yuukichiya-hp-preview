@@ -89,6 +89,23 @@ const setupMobileNewsCollapsibles = (root = document) => {
       followingNode = nextNode;
     }
 
+    const collapsedHeader = newsCreateElement("div", "news-collapsed-header");
+    title.replaceWith(collapsedHeader);
+    collapsedHeader.append(title);
+
+    const firstImage = article.querySelector(".notice__media img");
+    if (firstImage) {
+      collapsedHeader.classList.add("has-thumbnail");
+      const thumbnail = document.createElement("img");
+      thumbnail.className = "news-collapsed-thumbnail";
+      thumbnail.src = firstImage.currentSrc || firstImage.src;
+      thumbnail.alt = "";
+      thumbnail.loading = "lazy";
+      thumbnail.decoding = "async";
+      thumbnail.setAttribute("aria-hidden", "true");
+      collapsedHeader.append(thumbnail);
+    }
+
     const toggle = newsCreateElement("button", "news-collapse-toggle", "内容を見る");
     toggle.type = "button";
     toggle.setAttribute("aria-expanded", "false");
