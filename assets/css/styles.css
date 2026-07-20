@@ -688,6 +688,101 @@ p {
   padding-top: 38px;
 }
 
+.ec-shop-promo {
+  padding-top: 24px;
+  padding-bottom: 42px;
+}
+
+.ec-shop-promo__link {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(300px, .55fr);
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(23, 52, 92, .14);
+  border-radius: 12px;
+  background: var(--navy);
+  box-shadow: 0 18px 46px rgba(23, 32, 51, .14);
+  color: var(--white);
+  text-decoration: none;
+  transition: box-shadow .2s ease, transform .2s ease;
+}
+
+.ec-shop-promo__link:hover,
+.ec-shop-promo__link:focus-visible {
+  box-shadow: 0 22px 54px rgba(23, 32, 51, .2);
+  transform: translateY(-3px);
+}
+
+.ec-shop-promo__visual {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--white);
+}
+
+.ec-shop-promo__visual img {
+  width: 100%;
+  height: 100%;
+  min-height: 310px;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform .35s ease;
+}
+
+.ec-shop-promo__link:hover .ec-shop-promo__visual img {
+  transform: scale(1.015);
+}
+
+.ec-shop-promo__badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  padding: 7px 13px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .94);
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 900;
+  box-shadow: 0 8px 22px rgba(23, 32, 51, .14);
+}
+
+.ec-shop-promo__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 14px;
+  min-width: 0;
+  padding: 34px;
+}
+
+.ec-shop-promo__copy .eyebrow {
+  color: var(--gold);
+}
+
+.ec-shop-promo__title {
+  font-family: "Noto Serif JP", serif;
+  font-size: clamp(29px, 3vw, 42px);
+  font-weight: 900;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+.ec-shop-promo__text {
+  color: rgba(255, 255, 255, .84);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.8;
+  text-wrap: pretty;
+}
+
+.ec-shop-promo__copy .button {
+  margin-top: 4px;
+  border-color: var(--white);
+  background: var(--white);
+  color: var(--navy);
+}
+
 .support-banner-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -710,6 +805,37 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.recruitment-section {
+  display: grid;
+  justify-items: center;
+  padding-top: 42px;
+  padding-bottom: 42px;
+}
+
+.recruitment-flyer-link {
+  display: block;
+  width: min(620px, 100%);
+  overflow: hidden;
+  border: 1px solid rgba(23, 52, 92, .14);
+  border-radius: 12px;
+  background: #f7f1e4;
+  box-shadow: var(--shadow);
+  line-height: 0;
+  transition: box-shadow .2s ease, transform .2s ease;
+}
+
+.recruitment-flyer-link:hover,
+.recruitment-flyer-link:focus-visible {
+  box-shadow: 0 22px 54px rgba(23, 32, 51, .18);
+  transform: translateY(-2px);
+}
+
+.recruitment-flyer-link img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .support-banner-image {
@@ -2446,6 +2572,62 @@ button.shop-month-calendar__day:focus-visible {
 @media (max-width: 640px) {
   .site-header {
     padding: 10px 18px;
+  }
+
+  .ec-shop-promo {
+    padding-top: 14px;
+    padding-bottom: 28px;
+  }
+
+  .ec-shop-promo__link {
+    grid-template-columns: 1fr;
+  }
+
+  .ec-shop-promo__visual {
+    aspect-ratio: 16 / 7.6;
+  }
+
+  .ec-shop-promo__visual img {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .ec-shop-promo__badge {
+    top: 10px;
+    left: 10px;
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  .ec-shop-promo__copy {
+    gap: 9px;
+    padding: 20px;
+  }
+
+  .ec-shop-promo__title {
+    font-size: 26px;
+    line-height: 1.36;
+  }
+
+  .ec-shop-promo__text {
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  .ec-shop-promo__copy .button {
+    width: 100%;
+    min-height: 42px;
+    margin-top: 2px;
+    padding: 9px 12px;
+  }
+
+  .section.recruitment-section {
+    padding-top: 26px;
+    padding-bottom: 26px;
+  }
+
+  .recruitment-flyer-link {
+    border-radius: 9px;
   }
 
   .brand span {
