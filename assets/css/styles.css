@@ -813,11 +813,10 @@ p {
   object-fit: cover;
 }
 
-.recruitment-section {
+.calendar-recruitment {
   display: grid;
   justify-items: center;
-  padding-top: 42px;
-  padding-bottom: 42px;
+  min-width: 0;
 }
 
 .recruitment-flyer-link {
@@ -842,6 +841,10 @@ p {
   display: block;
   width: 100%;
   height: auto;
+}
+
+.calendar-recruitment .recruitment-flyer-link {
+  width: 100%;
 }
 
 .support-banner-image {
@@ -2625,11 +2628,6 @@ button.shop-month-calendar__day:focus-visible {
     min-height: 40px;
     margin-top: 2px;
     padding: 8px 12px;
-  }
-
-  .section.recruitment-section {
-    padding-top: 26px;
-    padding-bottom: 26px;
   }
 
   .recruitment-flyer-link {
