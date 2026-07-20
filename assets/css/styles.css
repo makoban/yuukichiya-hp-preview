@@ -695,7 +695,7 @@ p {
 
 .ec-shop-promo__link {
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(300px, .55fr);
+  grid-template-columns: minmax(0, 1fr) minmax(380px, .48fr);
   min-width: 0;
   overflow: hidden;
   border: 1px solid rgba(23, 52, 92, .14);
@@ -762,7 +762,7 @@ p {
 
 .ec-shop-promo__title {
   font-family: "Noto Serif JP", serif;
-  font-size: clamp(29px, 3vw, 42px);
+  font-size: clamp(30px, 3vw, 36px);
   font-weight: 900;
   line-height: 1.35;
   text-wrap: balance;
@@ -774,6 +774,12 @@ p {
   font-weight: 700;
   line-height: 1.8;
   text-wrap: pretty;
+}
+
+.ec-shop-promo .phrase-line {
+  display: block;
+  max-width: 100%;
+  white-space: nowrap;
 }
 
 .ec-shop-promo__copy .button {
@@ -2600,25 +2606,25 @@ button.shop-month-calendar__day:focus-visible {
   }
 
   .ec-shop-promo__copy {
-    gap: 9px;
-    padding: 20px;
+    gap: 7px;
+    padding: 16px 18px 18px;
   }
 
   .ec-shop-promo__title {
-    font-size: 26px;
-    line-height: 1.36;
+    font-size: 25px;
+    line-height: 1.32;
   }
 
   .ec-shop-promo__text {
     font-size: 14px;
-    line-height: 1.65;
+    line-height: 1.55;
   }
 
   .ec-shop-promo__copy .button {
     width: 100%;
-    min-height: 42px;
+    min-height: 40px;
     margin-top: 2px;
-    padding: 9px 12px;
+    padding: 8px 12px;
   }
 
   .section.recruitment-section {
