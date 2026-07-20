@@ -22,7 +22,6 @@ if (heroSlider) {
   const autoplayDelay = 5000;
   let activeIndex = 0;
   let autoplayTimer;
-  let interactionPaused = false;
   let userPaused = reduceMotion.matches;
   let motionOverride = false;
   let touchStartX = 0;
@@ -81,7 +80,7 @@ if (heroSlider) {
 
   const canAutoplay = () => {
     const motionAllowed = !reduceMotion.matches || motionOverride;
-    return slides.length > 1 && !userPaused && !interactionPaused && !document.hidden && motionAllowed;
+    return slides.length > 1 && !userPaused && !document.hidden && motionAllowed;
   };
 
   const startAutoplay = () => {
@@ -108,27 +107,6 @@ if (heroSlider) {
     if (reduceMotion.matches && userPaused) motionOverride = true;
     userPaused = !userPaused;
     updatePauseButton();
-    startAutoplay();
-  });
-
-  heroSlider.addEventListener("mouseenter", () => {
-    interactionPaused = true;
-    stopAutoplay();
-  });
-
-  heroSlider.addEventListener("mouseleave", () => {
-    interactionPaused = false;
-    startAutoplay();
-  });
-
-  heroSlider.addEventListener("focusin", () => {
-    interactionPaused = true;
-    stopAutoplay();
-  });
-
-  heroSlider.addEventListener("focusout", (event) => {
-    if (heroSlider.contains(event.relatedTarget)) return;
-    interactionPaused = false;
     startAutoplay();
   });
 
@@ -469,7 +447,9 @@ const fetchSnapshotEvents = async (store, months) => {
 const getDedupedEvents = (events) => {
   const seen = new Set();
   return events.filter((event) => {
-    const eventKey = `${event.title}-${event.dateKeys.join(",")}-${getTimeLabel(event)}`;
+    const normalizedTitle = event.title.replace(/\s+/g, " ").trim();
+    const eventTimeKey = event.isClosure ? "" : getTimeLabel(event);
+    const eventKey = `${normalizedTitle}-${event.dateKeys.join(",")}-${eventTimeKey}`;
     if (seen.has(eventKey)) return false;
 
     seen.add(eventKey);
