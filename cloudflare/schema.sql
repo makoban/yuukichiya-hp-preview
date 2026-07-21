@@ -55,3 +55,34 @@ CREATE TABLE IF NOT EXISTS draft_sessions (
   updated_at TEXT NOT NULL,
   FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS products (
+  id TEXT PRIMARY KEY,
+  status TEXT NOT NULL DEFAULT 'published',
+  title TEXT NOT NULL,
+  lead TEXT NOT NULL DEFAULT '',
+  features TEXT NOT NULL DEFAULT '[]',
+  target_stores TEXT NOT NULL DEFAULT '["本店","髙橋店"]',
+  base_url TEXT NOT NULL DEFAULT '',
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_products_status_order
+  ON products (status, sort_order, updated_at DESC);
+
+CREATE TABLE IF NOT EXISTS product_images (
+  id TEXT PRIMARY KEY,
+  product_id TEXT NOT NULL,
+  r2_key TEXT,
+  url TEXT NOT NULL,
+  content_type TEXT,
+  alt TEXT NOT NULL DEFAULT '',
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_product_images_product_order
+  ON product_images (product_id, sort_order);

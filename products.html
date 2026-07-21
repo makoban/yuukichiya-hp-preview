@@ -11,7 +11,7 @@
   <link rel="icon" href="assets/original/logo.png">
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
-<body data-page="products.html">
+<body data-page="products.html" data-products-api="https://yuukichiya-hp-news-bot.ai-fudosan.workers.dev/api/products" data-products-fallback="assets/data/products.json">
   <header class="site-header">
     <a class="brand" href="index.html" aria-label="勇吉屋 ホーム">
       <img src="assets/original/logo.png" alt="豊田市内の勇吉屋へ">
@@ -38,7 +38,7 @@
   <main>
     
     <section class="section product-list">
-      <article class="product-item">
+      <article class="product-item" data-product-id="junior-uniform">
             <div class="product-gallery" aria-label="中学校制服の写真">
               <figure class="product-gallery__main"><img src="assets/original/products/uniform-01.png" alt="KANKO Feel Air 学生服" loading="lazy" decoding="async"></figure>
               <div class="product-gallery__thumbs">
@@ -53,7 +53,7 @@
               <p class="lead">市内最多数の商品を取り揃えております。kanko の制服は、他メーカ学生服に比べ3年間着用後のもちが違います。kanko の商品中でも最高級品の Feel Air ・ Fine Label をぜひお試しください。</p>
               <ul class="clean-list"><li>別注商品製作可能です。総ゴム仕様、ボタンなし仕様、マジックテープ仕様など、どんな仕様にもお応えします。</li><li>KANKO Feel Air：制服日本1位メーカー＜カンコー＞のなかでも1番人気の学生服。</li><li>KANKO STLEAD：欲しい機能全部で、コスパに優れたカンコーの学生服。</li><li>オリジナルサイズUP：3年間安心のサイズupできる学生服。</li><li>KANKO Fine Label：現役女子中高生とコラボして生まれた1番人気の<span class="keep">セーラー服</span>。</li><li>KANKO Fine Label slim style：より細く、よりスッキリ、スタイル良く見えるスタイリッシュ<span class="keep">セーラー服</span>。</li><li>KANKO：カンコーのスタンダード、コスパに優れた数量限定<span class="keep">セーラー服</span>。</li><li>着心地、スタイル、予算に応じてお選びください。</li></ul>
             </div>
-          </article><article class="product-item">
+          </article><article class="product-item" data-product-id="junior-gym">
             <div class="product-gallery" aria-label="中学校体操服の写真">
               <figure class="product-gallery__main"><img src="assets/original/products/junior-gym-01.jpg" alt="勇吉屋特製ジャージ" loading="lazy" decoding="async"></figure>
               <div class="product-gallery__thumbs">
@@ -67,7 +67,7 @@
               <p class="lead">勇吉屋特製ジャージ。販売店によってジャージ・体操服も違います。（一部の学校を除く）</p>
               <ul class="clean-list"><li>勇吉屋のジャージ・半袖・ハーフパンツ・体操着は、縫製・生地・型紙すべてオリジナルです。</li><li>他店の物と比べ長期使用後のモチが違って、とっても丈夫です。近所の先輩方に聞いていただけると、非常にわかりやすいです。</li></ul>
             </div>
-          </article><article class="product-item">
+          </article><article class="product-item" data-product-id="elementary-gym">
             <div class="product-gallery" aria-label="小学校体操服の写真">
               <figure class="product-gallery__main"><img src="assets/original/products/elementary-gym-01.jpg" alt="小学校体操服" loading="lazy" decoding="async"></figure>
               <div class="product-gallery__thumbs">
@@ -81,7 +81,7 @@
               <p class="lead">半袖、長袖、ハーフパンツまで、学校生活に合わせて選べます。</p>
               <ul class="clean-list"><li>半袖吸汗速乾素材『どろよごれも落ちやすく、つきにくい』『抗菌防臭』『乾きが早く涼しい』『UVカット』。</li><li>従来の袖と着丈に絞りのついたタイプと、Tシャツ（絞りの無い）タイプと2種類ございます。</li><li>長袖速乾素材『汚れ落ちがいい』『乾きが早く温かい』『UVカット』。</li><li>ハーフパンツは、他店の商品に比べ毛玉ができにくい、色落ちしにくい、生地がしっかりしていて長持ちします。</li></ul>
             </div>
-          </article><article class="product-item">
+          </article><article class="product-item" data-product-id="school-bag">
             <div class="product-gallery" aria-label="通学バッグの写真">
               <figure class="product-gallery__main"><img src="assets/original/products/school-bag-01.png" alt="通学バッグ" loading="lazy" decoding="async"></figure>
               <div class="product-gallery__thumbs">
@@ -95,7 +95,7 @@
               <p class="lead">勇吉屋で販売しております<span class="keep">通学バッグ</span>は、学生専用に丈夫に作られたバッグです。</p>
               <ul class="clean-list"><li>スポーツバッグとは丈夫さが違います。自信をもってオススメします。</li><li>写真は一例です。他にも市内最多数取り揃えております。カバン専門店にも負けない商品量です。</li></ul>
             </div>
-          </article><article class="product-item">
+          </article><article class="product-item" data-product-id="loafer">
             <div class="product-gallery product-gallery--single" aria-label="EAST BOYローファーの写真">
               <figure class="product-gallery__main"><img src="assets/original/products/loafer-01.jpg" alt="EAST BOYローファー" loading="lazy" decoding="async"></figure>
             </div>
@@ -105,7 +105,7 @@
               <p class="lead">合皮<span class="keep">ローファー</span>で、お手入れが楽です。雨にも強く低反発クッション付き。</p>
               <ul class="clean-list"><li>人気急上昇の EASTBOY。低反発クッションでおススメです。</li></ul>
             </div>
-          </article><article class="product-item">
+          </article><article class="product-item" data-product-id="school-shoes">
             <div class="product-gallery product-gallery--wide" aria-label="通学くつ・うわばき・体育館シューズの写真">
               <figure class="product-gallery__main"><img src="assets/original/products/commute-shoes-01.jpg" alt="通学くつ" loading="lazy" decoding="async"></figure>
               <div class="product-gallery__thumbs">
@@ -124,7 +124,7 @@
               <p class="lead">写真は一例です。他にも多数取り揃えております。実際に履いてお確かめください。</p>
               <ul class="clean-list"><li>サイズ21cm～30cmまで幅広く取り揃えております。（商品によります）</li><li><span class="keep">うわばき・体育館シューズ</span>は各学校によって異なります。詳しくは店頭でお尋ねください。学校指定品となります。</li></ul>
             </div>
-          </article><article class="product-item">
+          </article><article class="product-item" data-product-id="rainwear">
             <div class="product-gallery product-gallery--single" aria-label="雨合羽の写真">
               <figure class="product-gallery__main"><img src="assets/original/products/rainwear-01.jpg" alt="雨合羽" loading="lazy" decoding="async"></figure>
             </div>
@@ -134,7 +134,7 @@
               <p class="lead">ストレッチ素材でよりスタイリッシュな学生用自転車通学<span class="keep">雨合羽</span>。</p>
               <ul class="clean-list"><li>軽くて動きやすいストレッチ素材を使用しています。</li><li>透湿5,000g/㎡・24hで汗が蒸れにくく、耐水圧10,000mm以上です。</li><li>前後面に反射パイピングを施しています。</li><li>リュックを背負った状態で着用できるワイド背マチ仕様です。</li><li>自転車ヘルメット対応で動くフード。ヘルメット未装着時も調整可能です。</li><li>成長期に合わせて裾上げが可能です。</li></ul>
             </div>
-          </article><article class="product-item">
+          </article><article class="product-item" data-product-id="original-print">
             <div class="product-gallery product-gallery--single" aria-label="オリジナルプリントTシャツの写真">
               <figure class="product-gallery__main"><img src="assets/original/products/print-shirt-01.jpg" alt="オリジナルプリントTシャツ" loading="lazy" decoding="async"></figure>
             </div>
@@ -168,5 +168,6 @@
     </div>
   </footer>
   <script src="assets/js/site.js"></script>
+  <script src="assets/js/product-feed.js"></script>
 </body>
 </html>
