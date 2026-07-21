@@ -1,0 +1,863 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="勇吉屋ホームページ公開前に必要なGoogleアカウント作成と、さくらのレンタルサーバ申し込み手順です。">
+  <title>公開前のご準備 | 勇吉屋ホームページ</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --navy: #10233f;
+      --green: #187a59;
+      --green-dark: #0f5f45;
+      --gold: #d6a943;
+      --red: #c74a3b;
+      --ink: #172131;
+      --muted: #5c6878;
+      --line: #d8e0e5;
+      --paper: #ffffff;
+      --soft: #f3f7f5;
+      --blue-soft: #eef4ff;
+      --shadow: 0 12px 34px rgba(16, 35, 63, .09);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--soft);
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--soft);
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+      line-height: 1.75;
+      letter-spacing: 0;
+    }
+
+    img, svg { max-width: 100%; height: auto; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button, input { font: inherit; }
+    a { color: inherit; }
+    h1, h2, h3 { margin: 0; line-break: strict; text-wrap: balance; }
+    p, li { line-break: strict; word-break: normal; overflow-wrap: normal; text-wrap: pretty; }
+
+    .phrase,
+    .keep {
+      display: inline-block;
+      max-width: 100%;
+      white-space: nowrap;
+    }
+
+    .site-header {
+      position: sticky;
+      z-index: 20;
+      top: 0;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, .96);
+      backdrop-filter: blur(10px);
+    }
+
+    .site-header__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: min(1180px, calc(100% - 40px));
+      min-height: 68px;
+      margin: 0 auto;
+      gap: 24px;
+    }
+
+    .brand {
+      color: var(--navy);
+      font-size: 1.05rem;
+      font-weight: 800;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .site-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .site-nav a {
+      min-height: 44px;
+      padding: 9px 12px;
+      color: var(--muted);
+      font-size: .88rem;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .site-nav a:hover,
+    .site-nav a:focus-visible { color: var(--green); }
+
+    main { min-width: 0; }
+
+    .container {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .intro {
+      padding: 64px 0 42px;
+      background:
+        linear-gradient(90deg, rgba(24, 122, 89, .08), transparent 42%),
+        var(--paper);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--green);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .intro h1 {
+      max-width: 780px;
+      color: var(--navy);
+      font-size: 3.6rem;
+      line-height: 1.24;
+    }
+
+    .intro__lead {
+      max-width: 720px;
+      margin: 20px 0 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .request-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin: 34px 0 0;
+    }
+
+    .request-item {
+      display: grid;
+      grid-template-columns: 52px minmax(0, 1fr);
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .request-item__number {
+      display: grid;
+      width: 52px;
+      height: 52px;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--green);
+      font-size: 1.2rem;
+      font-weight: 900;
+    }
+
+    .request-item b {
+      display: block;
+      color: var(--navy);
+      font-size: 1.05rem;
+    }
+
+    .request-item span:not(.request-item__number) {
+      display: block;
+      color: var(--muted);
+      font-size: .86rem;
+      font-weight: 600;
+    }
+
+    .security-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-top: 20px;
+      padding: 16px 18px;
+      border-left: 4px solid var(--red);
+      background: #fff8f6;
+      color: #713229;
+      font-size: .92rem;
+      font-weight: 700;
+    }
+
+    .security-note__mark {
+      flex: 0 0 auto;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--red);
+      text-align: center;
+      line-height: 24px;
+    }
+
+    .guide-section { padding: 68px 0; }
+    .guide-section + .guide-section { border-top: 1px solid var(--line); }
+    .guide-section--white { background: var(--paper); }
+
+    .section-heading {
+      display: grid;
+      grid-template-columns: 58px minmax(0, 1fr);
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 30px;
+    }
+
+    .section-heading__badge {
+      display: grid;
+      width: 58px;
+      height: 58px;
+      place-items: center;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--navy);
+      font-size: 1.25rem;
+      font-weight: 900;
+    }
+
+    .section-heading h2 {
+      color: var(--navy);
+      font-size: 2.4rem;
+      line-height: 1.34;
+    }
+
+    .section-heading p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      counter-reset: guide-step;
+    }
+
+    .step {
+      position: relative;
+      min-width: 0;
+      padding: 22px 22px 22px 64px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+    }
+
+    .step::before {
+      counter-increment: guide-step;
+      content: counter(guide-step);
+      position: absolute;
+      top: 20px;
+      left: 18px;
+      display: grid;
+      width: 32px;
+      height: 32px;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--green);
+      font-size: .9rem;
+      font-weight: 900;
+    }
+
+    .step h3 {
+      color: var(--navy);
+      font-size: 1.08rem;
+      line-height: 1.45;
+    }
+
+    .step p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: .92rem;
+      font-weight: 600;
+    }
+
+    .step strong { color: var(--red); }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 26px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 11px 18px;
+      border: 1px solid var(--green);
+      border-radius: 7px;
+      color: #fff;
+      background: var(--green);
+      font-weight: 800;
+      text-decoration: none;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .button:hover,
+    .button:focus-visible { background: var(--green-dark); }
+
+    .button--secondary {
+      color: var(--green);
+      background: var(--paper);
+    }
+
+    .button--secondary:hover,
+    .button--secondary:focus-visible {
+      color: #fff;
+      background: var(--green);
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 30px;
+    }
+
+    .shot {
+      min-width: 0;
+      margin: 0;
+    }
+
+    .shot-button {
+      display: block;
+      width: 100%;
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      cursor: zoom-in;
+      box-shadow: 0 8px 22px rgba(16, 35, 63, .08);
+    }
+
+    .shot-button:focus-visible { outline: 3px solid rgba(24, 122, 89, .32); outline-offset: 3px; }
+
+    .shot-button img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: contain;
+      background: #fff;
+    }
+
+    .shot figcaption {
+      padding: 9px 2px 0;
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 700;
+      line-height: 1.55;
+    }
+
+    .shot figcaption b { color: var(--navy); }
+
+    .handoff {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .handoff h2 {
+      color: var(--navy);
+      font-size: 2.3rem;
+    }
+
+    .handoff > div > p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .handoff-list,
+    .check-list {
+      margin: 24px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .handoff-list li,
+    .check-list li {
+      position: relative;
+      padding: 12px 0 12px 34px;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .handoff-list li::before,
+    .check-list li::before {
+      content: "";
+      position: absolute;
+      top: 18px;
+      left: 4px;
+      width: 15px;
+      height: 15px;
+      border: 2px solid var(--green);
+      border-radius: 3px;
+    }
+
+    .handoff-note {
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-top: 5px solid var(--gold);
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .handoff-note h3 { color: var(--navy); font-size: 1.15rem; }
+    .handoff-note p { margin: 9px 0 0; color: var(--muted); font-weight: 600; }
+
+    .site-footer {
+      padding: 28px 0 34px;
+      color: #dbe4ea;
+      background: var(--navy);
+      text-align: center;
+      font-size: .82rem;
+    }
+
+    .lightbox {
+      width: min(96vw, 1400px);
+      height: min(92vh, 940px);
+      padding: 0;
+      border: 0;
+      border-radius: 8px;
+      background: #111820;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .45);
+    }
+
+    .lightbox::backdrop { background: rgba(4, 12, 20, .82); }
+
+    .lightbox__bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      height: 58px;
+      padding: 8px 10px 8px 16px;
+      color: #fff;
+      background: #111820;
+    }
+
+    .lightbox__title {
+      min-width: 0;
+      overflow: hidden;
+      font-size: .9rem;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .lightbox__tools { display: flex; flex: 0 0 auto; gap: 8px; }
+
+    .icon-button {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, .32);
+      border-radius: 6px;
+      color: #fff;
+      background: rgba(255, 255, 255, .08);
+      cursor: pointer;
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+
+    .icon-button:hover,
+    .icon-button:focus-visible { background: rgba(255, 255, 255, .2); }
+
+    .lightbox__viewport {
+      display: grid;
+      width: 100%;
+      height: calc(100% - 58px);
+      overflow: auto;
+      place-items: center;
+      overscroll-behavior: contain;
+      touch-action: pan-x pan-y pinch-zoom;
+    }
+
+    .lightbox__image {
+      display: block;
+      max-width: none;
+      transform-origin: center;
+      transition: width .16s ease;
+    }
+
+    @media (max-width: 760px) {
+      .site-header__inner,
+      .container { width: min(100% - 24px, 1120px); }
+
+      .site-header__inner {
+        display: grid;
+        min-height: 0;
+        padding: 7px 0 5px;
+        gap: 1px;
+      }
+      .brand { text-align: center; font-size: .92rem; }
+      .site-nav { justify-content: space-between; }
+      .site-nav a { padding: 6px 9px; font-size: .78rem; }
+
+      .intro { padding: 42px 0 32px; }
+      .intro h1 { font-size: 2.2rem; }
+      .intro__lead { font-size: .96rem; }
+
+      .request-list,
+      .steps,
+      .handoff { grid-template-columns: 1fr; }
+
+      .request-item { grid-template-columns: 44px minmax(0, 1fr); padding: 15px; }
+      .request-item__number { width: 44px; height: 44px; }
+
+      .guide-section { padding: 48px 0; }
+      .section-heading { grid-template-columns: 48px minmax(0, 1fr); gap: 13px; }
+      .section-heading__badge { width: 48px; height: 48px; font-size: 1.05rem; }
+      .section-heading h2,
+      .handoff h2 { font-size: 1.85rem; }
+      .section-heading h2 .phrase,
+      .handoff h2 .phrase,
+      .button .phrase { display: block; }
+      .section-heading p { font-size: .9rem; }
+
+      .step { padding: 18px 16px 18px 56px; }
+      .step::before { top: 17px; left: 14px; }
+
+      .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .shot figcaption { font-size: .72rem; }
+
+      .button-row { display: grid; grid-template-columns: 1fr; }
+      .button { width: 100%; flex-direction: column; white-space: normal; }
+
+      .lightbox { width: 100vw; height: 100dvh; max-width: none; max-height: none; border-radius: 0; }
+      .lightbox__bar { padding-left: 12px; }
+    }
+
+    @media (max-width: 359px) {
+      .intro h1 { font-size: 1.9rem; }
+      .brand { font-size: .82rem; }
+      .site-nav a { font-size: .72rem; padding-inline: 5px; }
+      .security-note { padding: 14px; font-size: .84rem; }
+      .shot figcaption { font-size: .68rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .lightbox__image { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="#top">勇吉屋 公開前準備</a>
+      <nav class="site-nav" aria-label="ページ内メニュー">
+        <a href="#google">Google</a>
+        <a href="#sakura">さくら</a>
+        <a href="#handoff">完了後</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="intro">
+      <div class="container">
+        <p class="eyebrow">Website Renewal Setup</p>
+        <h1><span class="phrase">新ホームページ</span><span class="phrase">公開前の、</span><span class="phrase">2つのご準備。</span></h1>
+        <p class="intro__lead"><span class="phrase">画面の順番どおりに</span><span class="phrase">進めれば大丈夫です。</span> <span class="phrase">契約名義と支払いは</span><span class="phrase">勇吉屋様で管理し、</span><span class="phrase">ホームページの設定作業は</span><span class="phrase">BANTEXが行います。</span></p>
+
+        <div class="request-list" aria-label="準備するもの">
+          <article class="request-item">
+            <span class="request-item__number">1</span>
+            <div><b>Googleアカウント</b><span>営業日・イベントカレンダー用</span></div>
+          </article>
+          <article class="request-item">
+            <span class="request-item__number">2</span>
+            <div><b>さくらのレンタルサーバ</b><span>ホームページとメールの運用先</span></div>
+          </article>
+        </div>
+
+        <div class="security-note" role="note">
+          <span class="security-note__mark" aria-hidden="true">!</span>
+          <span>パスワード・認証コード・カード番号は、メールやチャットへ書かないでください。必要な設定権限だけを安全に共有します。</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="guide-section guide-section--white" id="google">
+      <div class="container">
+        <div class="section-heading">
+          <span class="section-heading__badge">1</span>
+          <div>
+            <p class="eyebrow">Google Account</p>
+            <h2><span class="phrase">Google</span><span class="phrase">アカウントを</span><span class="phrase">作る</span></h2>
+            <p><span class="phrase">勇吉屋様が所有する</span><span class="phrase">仕事用アカウントとして</span><span class="phrase">作成します。</span></p>
+          </div>
+        </div>
+
+        <div class="steps">
+          <article class="step">
+            <h3>公式の作成画面を開く</h3>
+            <p>下の緑のボタンからGoogle公式ページを開きます。</p>
+          </article>
+          <article class="step">
+            <h3>会社で管理できる名前を入力</h3>
+            <p>画面の「姓」「名」を入力して次へ進みます。個人用ではなく、勇吉屋様が今後も管理できる内容にします。</p>
+          </article>
+          <article class="step">
+            <h3>Gmailアドレスとパスワードを決める</h3>
+            <p>分かりやすい仕事用アドレスを選び、パスワードは社内で安全に保管してください。</p>
+          </article>
+          <article class="step">
+            <h3>復旧用の電話番号を登録</h3>
+            <p>松田社長または社内で受信できる番号を使います。認証番号は画面にだけ入力します。</p>
+          </article>
+          <article class="step">
+            <h3>BANTEXへ伝えるのはアドレスだけ</h3>
+            <p>作成したGoogleのメールアドレスをご連絡ください。<strong>パスワードは不要です。</strong></p>
+          </article>
+          <article class="step">
+            <h3>カレンダーの編集権限を共有</h3>
+            <p>Googleカレンダーの「設定と共有」から、メール本文に記載したBANTEX担当アドレスへ編集権限を付けます。</p>
+          </article>
+        </div>
+
+        <div class="button-row">
+          <a class="button" href="https://accounts.google.com/signup" target="_blank" rel="noopener noreferrer"><span class="phrase">Googleアカウント</span><span class="phrase">作成画面を開く ↗</span></a>
+          <a class="button button--secondary" href="https://support.google.com/calendar/answer/37082?hl=ja" target="_blank" rel="noopener noreferrer"><span class="phrase">カレンダー共有の</span><span class="phrase">公式説明を見る ↗</span></a>
+        </div>
+
+        <div class="gallery" aria-label="Googleアカウント作成の画面例">
+          <figure class="shot">
+            <button class="shot-button" type="button" data-lightbox-src="assets/setup-guide/google-account-signup.jpg" data-lightbox-title="Googleアカウント作成画面">
+              <img src="assets/setup-guide/google-account-signup.jpg" alt="Googleアカウント作成画面の姓と名の入力欄" loading="lazy">
+            </button>
+            <figcaption><b>画面1</b> 姓と名を入力して進みます。</figcaption>
+          </figure>
+          <figure class="shot">
+            <button class="shot-button" type="button" data-lightbox-src="assets/setup-guide/google-account-help.jpg" data-lightbox-title="Google公式のアカウント作成説明">
+              <img src="assets/setup-guide/google-account-help.jpg" alt="Google公式ヘルプのアカウント作成説明" loading="lazy">
+            </button>
+            <figcaption><b>画面2</b> 迷った場合は公式説明を確認します。</figcaption>
+          </figure>
+          <figure class="shot">
+            <button class="shot-button" type="button" data-lightbox-src="assets/setup-guide/google-calendar-share.jpg" data-lightbox-title="Googleカレンダー共有の公式説明">
+              <img src="assets/setup-guide/google-calendar-share.jpg" alt="Googleカレンダー共有の公式ヘルプ画面" loading="lazy">
+            </button>
+            <figcaption><b>画面3</b> アカウント自体ではなく、カレンダー権限を共有します。</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="guide-section" id="sakura">
+      <div class="container">
+        <div class="section-heading">
+          <span class="section-heading__badge">2</span>
+          <div>
+            <p class="eyebrow">Sakura Rental Server</p>
+            <h2><span class="phrase">さくらの</span><span class="phrase">レンタルサーバ</span><span class="phrase">を申し込む</span></h2>
+            <p><span class="phrase">「スタンダード」を選びます。</span><span class="phrase">新しい独自ドメインは</span><span class="phrase">購入しません。</span></p>
+          </div>
+        </div>
+
+        <div class="steps">
+          <article class="step">
+            <h3>公式の申し込み画面を開く</h3>
+            <p>「サーバーを申し込む」を選びます。</p>
+          </article>
+          <article class="step">
+            <h3>スタンダードを選ぶ</h3>
+            <p>「さくらのレンタルサーバ スタンダード」をカートに入れます。</p>
+          </article>
+          <article class="step">
+            <h3>初期ドメインを入力</h3>
+            <p><span class="keep">yuukichiya-web</span> など分かりやすい文字を入力します。空きがある名前を選びます。</p>
+          </article>
+          <article class="step">
+            <h3>独自ドメインは追加しない</h3>
+            <p>現在の <span class="keep">yuukichi-ya.com</span> は、ホームページ確認後にBANTEXが移行します。</p>
+          </article>
+          <article class="step">
+            <h3>新規会員登録と認証</h3>
+            <p>普段確認できるメールアドレスを登録し、届いた認証コードを同じ端末・ブラウザで入力します。</p>
+          </article>
+          <article class="step">
+            <h3>契約者・支払い情報を入力</h3>
+            <p>勇吉屋様名義で入力し、内容を確認して申し込みます。カード情報はBANTEXへ送りません。</p>
+          </article>
+          <article class="step">
+            <h3>完了メールを保存</h3>
+            <p>「ログイン情報と仮登録完了のお知らせ」は削除せず保管してください。</p>
+          </article>
+          <article class="step">
+            <h3>BANTEXへ初期ドメインを連絡</h3>
+            <p>サーバーパスワードが必要な場合は、メールではなく電話または画面共有で確認します。</p>
+          </article>
+        </div>
+
+        <div class="button-row">
+          <a class="button" href="https://secure.sakura.ad.jp/order/rs/plans/" target="_blank" rel="noopener noreferrer"><span class="phrase">さくらの申し込み画面を</span><span class="phrase">開く ↗</span></a>
+          <a class="button button--secondary" href="https://help.sakura.ad.jp/purpose_beginner/2602/" target="_blank" rel="noopener noreferrer"><span class="phrase">さくら公式の詳しい手順を</span><span class="phrase">見る ↗</span></a>
+        </div>
+
+        <div class="gallery" aria-label="さくらのレンタルサーバ申し込み画面例">
+          <figure class="shot">
+            <button class="shot-button" type="button" data-lightbox-src="assets/setup-guide/sakura-step-service.png" data-lightbox-title="サービス選択画面">
+              <img src="assets/setup-guide/sakura-step-service.png" alt="さくらの申し込みでサーバーを選択する画面" loading="lazy">
+            </button>
+            <figcaption><b>画面1</b> 「サーバーを申し込む」を選択。</figcaption>
+          </figure>
+          <figure class="shot">
+            <button class="shot-button" type="button" data-lightbox-src="assets/setup-guide/sakura-step-plan.png" data-lightbox-title="スタンダードプラン選択画面">
+              <img src="assets/setup-guide/sakura-step-plan.png" alt="さくらのスタンダードプランをカートに入れる画面" loading="lazy">
+            </button>
+            <figcaption><b>画面2</b> 「スタンダード」をカートへ。</figcaption>
+          </figure>
+          <figure class="shot">
+            <button class="shot-button" type="button" data-lightbox-src="assets/setup-guide/sakura-step-domain.png" data-lightbox-title="初期ドメイン入力画面">
+              <img src="assets/setup-guide/sakura-step-domain.png" alt="さくらの初期ドメインを入力する画面" loading="lazy">
+            </button>
+            <figcaption><b>画面3</b> 初期ドメインは後から変更できません。</figcaption>
+          </figure>
+          <figure class="shot">
+            <button class="shot-button" type="button" data-lightbox-src="assets/setup-guide/sakura-step-email.png" data-lightbox-title="会員登録メールアドレス入力画面">
+              <img src="assets/setup-guide/sakura-step-email.png" alt="さくら会員登録のメールアドレス入力画面" loading="lazy">
+            </button>
+            <figcaption><b>画面4</b> 普段確認できるメールを入力。</figcaption>
+          </figure>
+          <figure class="shot">
+            <button class="shot-button" type="button" data-lightbox-src="assets/setup-guide/sakura-step-code.png" data-lightbox-title="認証コード入力画面">
+              <img src="assets/setup-guide/sakura-step-code.png" alt="さくら会員登録の認証コード入力画面" loading="lazy">
+            </button>
+            <figcaption><b>画面5</b> 届いた認証コードを画面へ入力。</figcaption>
+          </figure>
+          <figure class="shot">
+            <button class="shot-button" type="button" data-lightbox-src="assets/setup-guide/sakura-step-payment.png" data-lightbox-title="支払い方法選択画面">
+              <img src="assets/setup-guide/sakura-step-payment.png" alt="さくらレンタルサーバの支払い方法選択画面" loading="lazy">
+            </button>
+            <figcaption><b>画面6</b> 契約者本人が支払い方法を登録。</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="guide-section guide-section--white" id="handoff">
+      <div class="container handoff">
+        <div>
+          <p class="eyebrow">After Setup</p>
+          <h2><span class="phrase">完了後に</span><span class="phrase">ご連絡ください</span></h2>
+          <p><span class="phrase">新規契約はGoogleと</span><span class="phrase">さくらの2つです。</span><span class="phrase">実際の切り替えには、</span><span class="phrase">現在のサービスからの</span><span class="phrase">引き継ぎ情報も使います。</span></p>
+          <ul class="handoff-list">
+            <li>作成したGoogleアカウントのメールアドレス</li>
+            <li>さくらの初期ドメインと申し込み完了の連絡</li>
+            <li>現在のドメイン移管用AuthCode</li>
+            <li>現在使っているメールアドレスの一覧</li>
+            <li>LINE公式アカウント・BASEの管理権限</li>
+          </ul>
+        </div>
+
+        <aside class="handoff-note">
+          <h3>まだJimdoは解約しません</h3>
+          <p>新ホームページ、メール、独自ドメイン、BASE、LINE、カレンダーの動作を確認してから切り替えます。元のホームページとメールを残したまま進めます。</p>
+          <ul class="check-list" aria-label="完了チェック">
+            <li>Googleアカウント作成</li>
+            <li>さくらスタンダード申込</li>
+            <li>完了内容をBANTEXへ連絡</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">勇吉屋ホームページ リニューアル準備ガイド / 2026年7月22日</div>
+  </footer>
+
+  <dialog class="lightbox" id="lightbox" aria-labelledby="lightbox-title">
+    <div class="lightbox__bar">
+      <span class="lightbox__title" id="lightbox-title">画像を拡大表示</span>
+      <div class="lightbox__tools">
+        <button class="icon-button" type="button" data-zoom-out aria-label="縮小" title="縮小">−</button>
+        <button class="icon-button" type="button" data-zoom-in aria-label="拡大" title="拡大">＋</button>
+        <button class="icon-button" type="button" data-close aria-label="閉じる" title="閉じる">×</button>
+      </div>
+    </div>
+    <div class="lightbox__viewport">
+      <img class="lightbox__image" src="" alt="">
+    </div>
+  </dialog>
+
+  <script>
+    (() => {
+      const dialog = document.querySelector('#lightbox');
+      const image = dialog.querySelector('.lightbox__image');
+      const title = dialog.querySelector('.lightbox__title');
+      const viewport = dialog.querySelector('.lightbox__viewport');
+      const triggers = document.querySelectorAll('[data-lightbox-src]');
+      let scale = 1;
+      let lastTrigger = null;
+
+      const renderScale = () => {
+        image.style.width = `${Math.round(scale * 100)}%`;
+      };
+
+      const closeDialog = () => {
+        dialog.close();
+        if (lastTrigger) lastTrigger.focus();
+      };
+
+      triggers.forEach((trigger) => {
+        trigger.addEventListener('click', () => {
+          lastTrigger = trigger;
+          scale = 1;
+          image.src = trigger.dataset.lightboxSrc;
+          image.alt = trigger.querySelector('img')?.alt || '';
+          title.textContent = trigger.dataset.lightboxTitle || '画像を拡大表示';
+          renderScale();
+          dialog.showModal();
+          viewport.scrollTo({ top: 0, left: 0 });
+        });
+      });
+
+      dialog.querySelector('[data-zoom-in]').addEventListener('click', () => {
+        scale = Math.min(3, scale + .5);
+        renderScale();
+      });
+
+      dialog.querySelector('[data-zoom-out]').addEventListener('click', () => {
+        scale = Math.max(.5, scale - .5);
+        renderScale();
+      });
+
+      dialog.querySelector('[data-close]').addEventListener('click', closeDialog);
+
+      dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) closeDialog();
+      });
+    })();
+  </script>
+</body>
+</html>
