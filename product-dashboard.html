@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>商品一覧編集ダッシュボード | 勇吉屋</title>
+  <meta name="description" content="勇吉屋HPの商品一覧を安全に編集・確認・公開するための専用ダッシュボードです。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@600;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="assets/original/logo.png">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/product-dashboard.css">
+</head>
+<body class="product-admin-page" data-page="product-dashboard.html" data-products-api-base="https://yuukichiya-hp-news-bot.ai-fudosan.workers.dev" data-products-fallback="assets/data/products.json">
+  <header class="site-header product-admin-header">
+    <a class="brand" href="index.html" aria-label="勇吉屋 ホーム">
+      <img src="assets/original/logo.png" alt="勇吉屋">
+      <span>商品編集管理</span>
+    </a>
+    <nav class="product-admin-header__nav" aria-label="管理画面ナビゲーション">
+      <a class="is-current" href="product-dashboard.html">商品一覧の編集</a>
+      <a href="yuukichiya-dashboard.html">新着情報の編集</a>
+      <a href="products.html" target="_blank" rel="noopener">公開ページを見る</a>
+    </nav>
+  </header>
+
+  <section class="product-admin-hero">
+    <div>
+      <p class="eyebrow">Product Editor</p>
+      <h1><span class="phrase">商品一覧だけを、</span><span class="phrase">安全に更新。</span></h1>
+      <p><span class="phrase">文章と写真を確認してから、</span><span class="phrase">勇吉屋HPへ公開できます。</span></p>
+    </div>
+  </section>
+
+  <main class="product-admin-shell" data-product-dashboard>
+    <section class="product-admin-guide" aria-labelledby="product-admin-guide-title">
+      <div>
+        <p class="eyebrow">編集できる範囲</p>
+        <h2 id="product-admin-guide-title">商品内容だけに限定しています。</h2>
+      </div>
+      <ul>
+        <li>紹介文・特長・写真・取扱店舗・BASEリンク</li>
+        <li>商品の表示／非表示と並び順</li>
+        <li>価格・在庫・HPデザインは変更しません</li>
+      </ul>
+    </section>
+
+    <section class="product-admin-login" aria-label="管理画面への接続">
+      <div>
+        <p class="eyebrow">Login</p>
+        <h2>管理画面に接続</h2>
+        <p class="product-admin-status" data-product-status data-tone="info">商品データを読み込んでいます。</p>
+      </div>
+      <label class="product-admin-field">管理パスワード
+        <input type="password" data-product-token autocomplete="current-password" placeholder="管理パスワードを入力">
+      </label>
+      <div class="product-admin-login__actions">
+        <button class="button" type="button" data-product-connect>接続する</button>
+        <button class="button button--light button--line" type="button" data-product-reload>再読み込み</button>
+      </div>
+      <p class="product-admin-login__note">パスワードはページやGitHubへ保存しません。ブラウザを閉じると消えます。</p>
+    </section>
+
+    <section class="product-admin-workspace">
+      <aside class="product-admin-list-panel" aria-label="編集する商品">
+        <div class="product-admin-panel-heading">
+          <div>
+            <p class="eyebrow">Products</p>
+            <h2>商品を選ぶ</h2>
+          </div>
+          <span data-product-count>8商品</span>
+        </div>
+        <p class="product-admin-help">商品を選んでください。矢印で表示順を変更できます。</p>
+        <div class="product-admin-list" data-product-list></div>
+      </aside>
+
+      <section class="product-admin-editor" aria-label="商品内容の編集">
+        <form data-product-form>
+          <input type="hidden" name="id">
+          <div class="product-admin-panel-heading product-admin-editor__heading">
+            <div>
+              <p class="eyebrow">Edit</p>
+              <h2>商品内容</h2>
+            </div>
+            <div class="product-admin-actions">
+              <button class="button button--light button--line" type="button" data-product-reset>変更を戻す</button>
+              <button class="button button--light button--line" type="button" data-product-draft>下書き保存</button>
+              <button class="button" type="button" data-product-publish>HPへ公開</button>
+            </div>
+          </div>
+
+          <div class="product-admin-form-grid">
+            <label class="product-admin-field product-admin-field--wide">商品名
+              <input type="text" name="title" readonly aria-describedby="product-title-help">
+              <small id="product-title-help">商品名の追加・変更は、HP管理者が行います。</small>
+            </label>
+            <label class="product-admin-field">表示状態
+              <select name="status">
+                <option value="published">表示する</option>
+                <option value="hidden">非表示</option>
+              </select>
+            </label>
+            <fieldset class="product-admin-field product-admin-store-field">
+              <legend>取扱店舗</legend>
+              <label><input type="checkbox" name="targetStores" value="本店"> 本店</label>
+              <label><input type="checkbox" name="targetStores" value="髙橋店"> 髙橋店</label>
+            </fieldset>
+            <label class="product-admin-field product-admin-field--wide">短い紹介文
+              <textarea name="lead" rows="4" maxlength="220" required></textarea>
+              <small><span data-lead-count>0</span>/220文字</small>
+            </label>
+            <label class="product-admin-field product-admin-field--wide">商品の特長
+              <textarea name="features" rows="8" maxlength="1200" required placeholder="1行に1つずつ入力してください"></textarea>
+              <small>1行に1つずつ入力します。最大8項目まで表示します。</small>
+            </label>
+            <label class="product-admin-field product-admin-field--wide">BASEの商品・カテゴリURL（任意）
+              <input type="url" name="baseUrl" inputmode="url" placeholder="https://yuukichiya.base.shop/...">
+              <small>価格・在庫・注文はBASE側で管理します。</small>
+            </label>
+          </div>
+        </form>
+
+        <section class="product-admin-images" aria-labelledby="product-images-title">
+          <div class="product-admin-panel-heading">
+            <div>
+              <p class="eyebrow">Images</p>
+              <h2 id="product-images-title">商品写真</h2>
+            </div>
+            <label class="button button--light button--line product-admin-upload">写真を追加
+              <input type="file" accept="image/jpeg,image/png,image/webp" multiple data-product-image-input>
+            </label>
+          </div>
+          <p class="product-admin-help">1商品4枚を目安に、最大8枚まで。先頭の写真が大きく表示されます。</p>
+          <div class="product-admin-image-list" data-product-images></div>
+        </section>
+      </section>
+
+      <aside class="product-admin-preview-panel" aria-label="商品表示プレビュー">
+        <div class="product-admin-panel-heading">
+          <div>
+            <p class="eyebrow">Preview</p>
+            <h2>表示確認</h2>
+          </div>
+          <span class="product-admin-preview-state" data-preview-state>表示する</span>
+        </div>
+        <p class="product-admin-help">入力すると、公開前の見え方が変わります。</p>
+        <article class="product-admin-preview-card" data-product-preview></article>
+        <a class="product-admin-public-link" href="products.html" target="_blank" rel="noopener">商品一覧ページを別画面で見る</a>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="site-footer product-admin-footer">
+    <div>
+      <strong>勇吉屋 商品編集管理</strong>
+      <p>編集できる場所を限定し、HPのデザインやプログラムを誤って変更しない仕組みです。</p>
+    </div>
+  </footer>
+  <script src="assets/js/product-dashboard.js"></script>
+</body>
+</html>

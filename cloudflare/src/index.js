@@ -1,5 +1,7 @@
 const textEncoder = new TextEncoder();
 const MAX_JSON_BYTES = 1024 * 1024;
+const MAX_PRODUCT_IMAGE_BYTES = 5 * 1024 * 1024;
+const ALLOWED_PRODUCT_IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 const SESSION_TTL_MS = 3 * 60 * 60 * 1000;
 
 export default {
@@ -25,6 +27,19 @@ export default {
             updatedAt: new Date().toISOString(),
           },
           items: posts,
+        }, 200, env);
+      }
+
+      if (request.method === "GET" && url.pathname === "/api/products") {
+        const products = await listProducts(env, request.url, "published");
+        return jsonResponse({
+          schemaVersion: "2026-07-21.yuukichiya-products.v1",
+          source: {
+            name: "勇吉屋商品一覧",
+            mode: "worker",
+            updatedAt: new Date().toISOString(),
+          },
+          items: products,
         }, 200, env);
       }
 
@@ -332,6 +347,154 @@ const replacePostLinks = async (env, postId, links) => {
   )));
 };
 
+const rowToProduct = (row) => ({
+  id: row.id,
+  status: row.status === "hidden" ? "hidden" : "published",
+  title: row.title,
+  lead: row.lead || "",
+  features: parseJsonArray(row.features),
+  targetStores: parseJsonArray(row.target_stores, ["本店", "髙橋店"]),
+  baseUrl: row.base_url || "",
+  sortOrder: Number(row.sort_order || 0),
+  createdAt: row.created_at,
+  updatedAt: row.updated_at,
+  images: [],
+});
+
+const productImageUrl = (requestUrl, row) => {
+  if (!row.url) return "";
+  if (/^https?:\/\//.test(row.url)) return row.url;
+  if (row.r2_key) return new URL(`/media/${row.r2_key}`, publicBaseUrl(requestUrl)).toString();
+  return row.url.replace(/^\//, "");
+};
+
+const hydrateProducts = async (rows, env, requestUrl) => {
+  const products = rows.map(rowToProduct);
+  if (!products.length) return products;
+  const ids = products.map((product) => product.id);
+  const placeholders = ids.map(() => "?").join(",");
+  const imagesResult = await env.DB.prepare(
+    `SELECT * FROM product_images WHERE product_id IN (${placeholders}) ORDER BY sort_order ASC, created_at ASC`,
+  ).bind(...ids).all();
+  const productsById = new Map(products.map((product) => [product.id, product]));
+  (imagesResult.results || []).forEach((row) => {
+    const product = productsById.get(row.product_id);
+    if (!product) return;
+    product.images.push({
+      id: row.id,
+      url: productImageUrl(requestUrl, row),
+      alt: row.alt || product.title,
+      sortOrder: Number(row.sort_order || 0),
+    });
+  });
+  return products;
+};
+
+const listProducts = async (env, requestUrl, status = "all") => {
+  const query = status === "all"
+    ? "SELECT * FROM products ORDER BY sort_order ASC, updated_at DESC"
+    : "SELECT * FROM products WHERE status = ? ORDER BY sort_order ASC, updated_at DESC";
+  const result = status === "all"
+    ? await env.DB.prepare(query).all()
+    : await env.DB.prepare(query).bind(status).all();
+  return hydrateProducts(result.results || [], env, requestUrl);
+};
+
+const getProduct = async (env, requestUrl, productId) => {
+  const row = await env.DB.prepare("SELECT * FROM products WHERE id = ?").bind(productId).first();
+  if (!row) return null;
+  const products = await hydrateProducts([row], env, requestUrl);
+  return products[0] || null;
+};
+
+const updateProductImages = async (env, productId, images = []) => {
+  await Promise.all(images.slice(0, 8).map((image, index) => (
+    env.DB.prepare(`
+      UPDATE product_images
+      SET alt = ?, sort_order = ?
+      WHERE id = ? AND product_id = ?
+    `).bind(
+      truncate(image.alt || "商品写真", 80),
+      index + 1,
+      image.id,
+      productId,
+    ).run()
+  )));
+};
+
+const upsertProduct = async (env, product) => {
+  const timestamp = nowIso();
+  const productId = String(product.id || "").trim();
+  if (!productId) throw new Error("product id is required");
+  const existing = await env.DB.prepare("SELECT created_at FROM products WHERE id = ?").bind(productId).first();
+  const features = (Array.isArray(product.features) ? product.features : [])
+    .map((feature) => truncate(feature, 320))
+    .filter(Boolean)
+    .slice(0, 8);
+  const targetStores = (Array.isArray(product.targetStores) ? product.targetStores : [])
+    .filter((store) => store === "本店" || store === "髙橋店");
+  const baseUrl = String(product.baseUrl || "").trim();
+  if (baseUrl && !/^https:\/\//.test(baseUrl)) throw new Error("invalid BASE url");
+
+  await env.DB.prepare(`
+    INSERT INTO products (
+      id, status, title, lead, features, target_stores, base_url,
+      sort_order, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(id) DO UPDATE SET
+      status = excluded.status,
+      lead = excluded.lead,
+      features = excluded.features,
+      target_stores = excluded.target_stores,
+      base_url = excluded.base_url,
+      sort_order = excluded.sort_order,
+      updated_at = excluded.updated_at
+  `).bind(
+    productId,
+    product.status === "hidden" ? "hidden" : "published",
+    truncate(product.title || "商品名未設定", 80),
+    truncate(product.lead || "", 320),
+    JSON.stringify(features),
+    JSON.stringify(targetStores),
+    baseUrl,
+    Math.max(1, Number(product.sortOrder || 1)),
+    existing?.created_at || timestamp,
+    timestamp,
+  ).run();
+  await updateProductImages(env, productId, product.images || []);
+  return productId;
+};
+
+const storeProductImage = async (env, productId, file, alt = "") => {
+  if (!env.MEDIA) throw new Error("media storage is not configured");
+  if (!ALLOWED_PRODUCT_IMAGE_TYPES.has(file.type)) throw new Error("unsupported image type");
+  if (file.size > MAX_PRODUCT_IMAGE_BYTES) throw new Error("image is too large");
+  const countRow = await env.DB.prepare("SELECT COUNT(*) AS count FROM product_images WHERE product_id = ?").bind(productId).first();
+  const imageCount = Number(countRow?.count || 0);
+  if (imageCount >= 8) throw new Error("maximum 8 images");
+  const extension = extensionForContentType(file.type);
+  const key = `products/${productId}/${crypto.randomUUID()}.${extension}`;
+  await env.MEDIA.put(key, await file.arrayBuffer(), {
+    httpMetadata: { contentType: file.type },
+    customMetadata: { productId, source: "dashboard" },
+  });
+  const imageId = `product-image-${crypto.randomUUID()}`;
+  await env.DB.prepare(`
+    INSERT INTO product_images (id, product_id, r2_key, url, content_type, alt, sort_order, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `).bind(
+    imageId,
+    productId,
+    key,
+    `/media/${key}`,
+    file.type,
+    truncate(alt || "商品写真", 80),
+    imageCount + 1,
+    nowIso(),
+  ).run();
+  return imageId;
+};
+
 const setDraftSession = async (env, sourceUser, postId) => {
   await env.DB.prepare(`
     INSERT INTO draft_sessions (source_user, post_id, updated_at)
@@ -529,6 +692,58 @@ const handleAdminRequest = async (request, env) => {
   const url = new URL(request.url);
   const postMatch = url.pathname.match(/^\/api\/admin\/posts\/([^/]+)$/);
   const imageMatch = url.pathname.match(/^\/api\/admin\/posts\/([^/]+)\/images\/([^/]+)$/);
+  const productMatch = url.pathname.match(/^\/api\/admin\/products\/([^/]+)$/);
+  const productImagesMatch = url.pathname.match(/^\/api\/admin\/products\/([^/]+)\/images$/);
+  const productImageMatch = url.pathname.match(/^\/api\/admin\/products\/([^/]+)\/images\/([^/]+)$/);
+
+  if (request.method === "GET" && url.pathname === "/api/admin/products") {
+    const status = url.searchParams.get("status") || "all";
+    const products = await listProducts(env, request.url, status);
+    return jsonResponse({ ok: true, products }, 200, env);
+  }
+
+  if (request.method === "PATCH" && productMatch) {
+    const productId = decodeURIComponent(productMatch[1]);
+    const existing = await getProduct(env, request.url, productId);
+    if (!existing) return jsonResponse({ ok: false, error: "product not found" }, 404, env);
+    const payload = await readJson(request);
+    payload.id = productId;
+    payload.title = existing.title;
+    await upsertProduct(env, payload);
+    const product = await getProduct(env, request.url, productId);
+    return jsonResponse({ ok: true, product }, 200, env);
+  }
+
+  if (request.method === "POST" && productImagesMatch) {
+    const productId = decodeURIComponent(productImagesMatch[1]);
+    const existing = await getProduct(env, request.url, productId);
+    if (!existing) return jsonResponse({ ok: false, error: "product not found" }, 404, env);
+    const formData = await request.formData();
+    const file = formData.get("image");
+    if (!file || typeof file.arrayBuffer !== "function") {
+      return jsonResponse({ ok: false, error: "image is required" }, 400, env);
+    }
+    await storeProductImage(env, productId, file, String(formData.get("alt") || existing.title));
+    const product = await getProduct(env, request.url, productId);
+    return jsonResponse({ ok: true, product }, 201, env);
+  }
+
+  if (request.method === "DELETE" && productImageMatch) {
+    const productId = decodeURIComponent(productImageMatch[1]);
+    const imageId = decodeURIComponent(productImageMatch[2]);
+    const countRow = await env.DB.prepare("SELECT COUNT(*) AS count FROM product_images WHERE product_id = ?").bind(productId).first();
+    if (Number(countRow?.count || 0) <= 1) {
+      return jsonResponse({ ok: false, error: "at least one image is required" }, 400, env);
+    }
+    const image = await env.DB.prepare(
+      "SELECT * FROM product_images WHERE id = ? AND product_id = ?",
+    ).bind(imageId, productId).first();
+    if (!image) return jsonResponse({ ok: false, error: "image not found" }, 404, env);
+    if (image.r2_key && env.MEDIA) await env.MEDIA.delete(image.r2_key);
+    await env.DB.prepare("DELETE FROM product_images WHERE id = ? AND product_id = ?").bind(imageId, productId).run();
+    const product = await getProduct(env, request.url, productId);
+    return jsonResponse({ ok: true, product }, 200, env);
+  }
 
   if (request.method === "GET" && url.pathname === "/api/admin/posts") {
     const status = url.searchParams.get("status") || "all";
