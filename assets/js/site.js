@@ -457,6 +457,20 @@ const getDedupedEvents = (events) => {
   });
 };
 
+const mergeCalendarEvents = (baseEvents, fetchedEvents) => {
+  const fetchedClosureDates = new Set(
+    fetchedEvents
+      .filter((event) => event.isClosure)
+      .flatMap((event) => event.dateKeys),
+  );
+  const filteredBaseEvents = baseEvents.filter((event) => (
+    !event.isClosure
+    || !event.dateKeys.some((dateKey) => fetchedClosureDates.has(dateKey))
+  ));
+
+  return getDedupedEvents([...filteredBaseEvents, ...fetchedEvents]);
+};
+
 const groupEventsByDate = (events) => {
   return events.reduce((groups, event) => {
     event.dateKeys.forEach((dateKey) => {
@@ -690,7 +704,7 @@ document.querySelectorAll(".shop-calendar-list[data-store-calendar]").forEach((t
       renderStoreCalendar(
         target,
         visibleMonths,
-        getDedupedEvents([...baseEvents, ...publicEvents]),
+        mergeCalendarEvents(baseEvents, publicEvents),
         store.label,
       );
       target.dataset.calendarSource = "public-api";
@@ -702,7 +716,7 @@ document.querySelectorAll(".shop-calendar-list[data-store-calendar]").forEach((t
           renderStoreCalendar(
             target,
             visibleMonths,
-            getDedupedEvents([...baseEvents, ...snapshotEvents]),
+            mergeCalendarEvents(baseEvents, snapshotEvents),
             store.label,
           );
         })
