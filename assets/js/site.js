@@ -154,7 +154,7 @@ let publicCalendarFeedPromise;
 const storeCalendarSettings = {
   main: {
     label: "本店",
-    calendarId: "77341630b85cb54d7674740dd824782d84acf1290fa743c7ed0689f47fea413e@group.calendar.google.com",
+    calendarId: "f9d1693b5ae910d926d4eaad8d3472e82583c7b03106d66fc79ade219801c484@group.calendar.google.com",
     closedWeekday: 2,
     specialClosures: [
       "2026-08-07",
@@ -170,7 +170,7 @@ const storeCalendarSettings = {
   },
   takahashi: {
     label: "髙橋店",
-    calendarId: "02e7cae3780410d324c3243920d35e65a7554bba73a1af0a401304bde30fbe49@group.calendar.google.com",
+    calendarId: "528f567d0cf6c583adb225f6e80c58ebacbb918af51bede8e8db5702f03b3605@group.calendar.google.com",
     closedWeekday: 1,
     specialClosures: [
       "2026-08-07",
