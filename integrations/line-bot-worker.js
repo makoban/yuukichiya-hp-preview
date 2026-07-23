@@ -77,7 +77,7 @@ const handleLineEvent = async (event, env) => {
 };
 
 const fetchRakusutaFeed = async (env) => {
-  const siteBase = env.SITE_BASE_URL || "https://makoban.github.io/yuukichiya-hp-preview/";
+  const siteBase = env.SITE_BASE_URL || "https://yuukichiya-web.sakura.ne.jp/";
   const feedUrl = env.RAKUSUTA_FEED_URL || new URL("assets/data/rakusuta-news.sample.json", siteBase).toString();
   const response = await fetch(feedUrl, { cf: { cacheTtl: 60 } });
   if (!response.ok) throw new Error(`feed error: ${response.status}`);
@@ -87,7 +87,7 @@ const fetchRakusutaFeed = async (env) => {
 const absoluteUrl = (value, env) => {
   if (!value) return "";
   if (/^https?:\/\//.test(value)) return value;
-  const siteBase = env.SITE_BASE_URL || "https://makoban.github.io/yuukichiya-hp-preview/";
+  const siteBase = env.SITE_BASE_URL || "https://yuukichiya-web.sakura.ne.jp/";
   return new URL(value, siteBase).toString();
 };
 

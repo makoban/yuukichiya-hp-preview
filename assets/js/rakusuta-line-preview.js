@@ -1,5 +1,5 @@
 const feedUrl = document.body.dataset.rakusutaFeed || "assets/data/rakusuta-news.sample.json";
-const siteBaseUrl = "https://makoban.github.io/yuukichiya-hp-preview/";
+const siteBaseUrl = "https://yuukichiya-web.sakura.ne.jp/";
 
 const formatDate = (value) => {
   if (!value) return "";

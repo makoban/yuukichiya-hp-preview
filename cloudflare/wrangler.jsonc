@@ -10,8 +10,8 @@
     "head_sampling_rate": 1
   },
   "vars": {
-    "PUBLIC_SITE_BASE_URL": "https://makoban.github.io/yuukichiya-hp-preview/",
-    "DASHBOARD_URL": "https://makoban.github.io/yuukichiya-hp-preview/yuukichiya-dashboard.html",
+    "PUBLIC_SITE_BASE_URL": "https://yuukichiya-web.sakura.ne.jp/",
+    "DASHBOARD_URL": "https://yuukichiya-web.sakura.ne.jp/yuukichiya-dashboard.html",
     "CORS_ORIGIN": "*"
   },
   "d1_databases": [
